@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+    <ImageView
+            android:id="@+id/imgViewCartList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_launcher" />
+
+    <TextView
+            android:id="@+id/txtIdCartList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/imgViewCartList"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/imgViewCartList"
+            android:gravity="center"
+            android:text="Id"
+            android:layout_toLeftOf="@+id/txtDateCreateCartList"/>
+
+    <ImageButton
+            android:id="@+id/imgBtnCartList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/txtPriceCartList"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="@drawable/shopcartexclude" />
+
+    <TextView
+            android:id="@+id/txtPriceCartList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/imgBtnCartList"
+            android:gravity="center"
+            android:text="Preço"
+            android:layout_alignBottom="@+id/txtIdCartList"
+            android:layout_toRightOf="@+id/txtDateCreateCartList"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Data"
+            android:gravity="center"
+            android:id="@+id/txtDateCreateCartList"
+            android:layout_alignBottom="@+id/txtIdCartList"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"/>
+
+</RelativeLayout>
