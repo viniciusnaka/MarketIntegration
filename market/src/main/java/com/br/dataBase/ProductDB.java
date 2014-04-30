@@ -23,7 +23,7 @@ public class ProductDB {
         sqlLiteDatabase = new DBHelper(context).getWritableDatabase();
 	}
 	
-	public boolean salvar(ProductBean productBean){
+	public ProductBean salvar(ProductBean productBean){
 		boolean success = false;
         sqlLiteDatabase.beginTransaction();
 		
@@ -53,9 +53,11 @@ public class ProductDB {
 			}
 			
 			if(result != -1){
+                productBean.setId((int) result);
                 sqlLiteDatabase.setTransactionSuccessful();
-                success = true;
-			}
+			} else {
+                productBean = null;
+            }
 			
 			
 		} catch (Exception e) {
@@ -64,7 +66,7 @@ public class ProductDB {
             sqlLiteDatabase.endTransaction();
 		}
 		
-		return success;
+		return productBean;
 	}
 	
 	public void updateProductAfterCart(List<ProductBean> productBeanList){

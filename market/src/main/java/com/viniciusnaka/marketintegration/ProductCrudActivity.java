@@ -138,14 +138,16 @@ public class ProductCrudActivity extends ActionBarActivity {
             productBean.setCategoryBean(categoryBean);
 			
 			ProductDB productDB = new ProductDB(getActivity());
-			if(productDB.salvar(productBean)){
+            productBean = productDB.salvar(productBean);
+			if(productBean != null){
 				Intent it = new Intent();
-                it.putExtra("msg", create ? "Salvo com sucesso!" : "Atualizado com sucesso!");
-				getActivity().setResult(RESULT_OK, it);
+                it.putExtra("msg", create ? "Produto salvo com sucesso!" : "Atualizado com sucesso!");
+                it.putExtra("product", productBean);
+                getActivity().setResult(RESULT_OK, it);
                 getActivity().finish();
 			}else{
 				Intent it = new Intent();
-                it.putExtra("msg", create ? "Falha ao cadastrar!" : "Falha ao atualizar!");
+                it.putExtra("msg", create ? "Falha ao cadastrar o Produto!" : "Falha ao atualizar!");
                 getActivity().setResult(RESULT_CANCELED, it);
                 getActivity().finish();
 			}

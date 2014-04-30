@@ -63,7 +63,11 @@ public class ProductActivity extends ActionBarActivity {
         private Button btnAdd;
         private ProductDB productDB;
         private static final int PAGE_ADD = 1;
+        private ProductAdapter adapter;
 
+        public ProductAdapter getAdapter() {
+            return adapter;
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,17 +82,19 @@ public class ProductActivity extends ActionBarActivity {
             btnAdd = (Button) rootView.findViewById(R.id.btnAddProduct);
 
             // monto o adapter com o contexto da tela e os dados para o listView
-            ProductAdapter adapter = new ProductAdapter(getActivity(), productBeanList);
+            adapter = new ProductAdapter(getActivity(), productBeanList);
 
             adapter.setChangeProduct(new ProductAdapter.ChangeProduct() {
                 @Override
                 public void onDeleteProduct(ProductBean productBeanLoad) {
                     if(productDB.delete(productBeanLoad)){
                         Toast.makeText(getActivity(), "Produto "+productBeanLoad.getName() + " deletado com sucesso!",
-                                Toast.LENGTH_SHORT);
+                                Toast.LENGTH_SHORT).show();
+                        productBeanList.remove(productBeanLoad);
+                        adapter.notifyDataSetChanged();
                     } else {
                         Toast.makeText(getActivity(), "Erro ao deletar o Produto "+productBeanLoad.getName()+ ".",
-                                Toast.LENGTH_SHORT);
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -104,20 +110,22 @@ public class ProductActivity extends ActionBarActivity {
             return rootView;
         }
 
-
-
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent it) {
             if (requestCode == PAGE_ADD){
                 Bundle param = it != null ? it.getExtras() : null;
                 if(param != null){
+                    ProductBean productBean = (ProductBean) param.get("product");
+                    productBeanList.add(productBean);
+                    listViewProdutos.setAdapter(adapter = new ProductAdapter(getActivity(), productBeanList));
+                    adapter.notifyDataSetChanged();
                     Toast.makeText(getActivity(), param.get("msg").toString() , Toast.LENGTH_SHORT)
                             .show();
                 }
             }
         }
 
-        @Override
+        /*@Override
         public void onResume() {
             super.onResume();
             if(listViewProdutos != null){
@@ -125,7 +133,7 @@ public class ProductActivity extends ActionBarActivity {
                 ProductAdapter adapter = new ProductAdapter(getActivity(), productBeanList);
                 listViewProdutos.setAdapter(adapter);
             }
-        }
+        }*/
 
         @Override
         public void onClick(View view) {

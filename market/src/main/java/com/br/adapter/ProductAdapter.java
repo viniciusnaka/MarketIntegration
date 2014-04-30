@@ -102,7 +102,6 @@ public class ProductAdapter extends BaseAdapter implements OnClickListener {
             switch (view.getId()) {
                 case R.id.btnDeleteProduct:
                     changeProduct.onDeleteProduct(productBeanLoad);
-                    notifyDataSetChanged();
                     break;
                 case R.id.btnEditProduct:
                     Intent it = new Intent(context, ProductCrudActivity.class);
@@ -112,7 +111,5 @@ public class ProductAdapter extends BaseAdapter implements OnClickListener {
             }
         }
     }
-
-
 
 }

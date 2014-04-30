@@ -8,6 +8,7 @@ import android.widget.*;
 import com.br.bean.CartBean;
 import com.viniciusnaka.marketintegration.R;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -61,7 +62,7 @@ public class CartListAdapter extends BaseAdapter {
 
         imgViewCartList.setImageResource(R.drawable.ic_launcher);
         txtIdCartList.setText(cartBeanLoad.getId().toString());
-        txtDateCreateCartList.setText("26/04/2014");
+        txtDateCreateCartList.setText(new Date().toString());
         txtPriceCartList.setText(cartBeanLoad.getPrice().toString());
         imgBtnCartList.setImageResource(R.drawable.ic_launcher);
 
