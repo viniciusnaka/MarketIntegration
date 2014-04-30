@@ -38,7 +38,33 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO category VALUES(4, 'Frutas');");
         db.execSQL("INSERT INTO category VALUES(5,'Limpeza');");
 
-	}
+        // inserindo os produtos
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Alcatra com Maminha(Kg)', 20.70, 1, 'alcatra_com_maminha', NULL, 10);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Alvejante Floral Brilhante 2l', 10.66, 5, 'alvejantefloralbrilhante_2l', NULL, 30);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Alvejante líquido sem cloro Vanish 3 litros', 19.98, 5, 'alvejanteliquidosemcloro_vanish_3l', NULL, 30);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Amaciante Classic Comfort 2l', 12.31, 5, 'amacianteclassicomfort_2l', NULL, 50);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Amaciante Clássico Mon Bijou 500ml', 5.50, 5, 'amacianteclassicomonbijou_500ml', NULL, 80);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Banana nanica(Kg)', 4.00, 4, 'banana_nanica', NULL, 20);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Batata doce rosada(Kg)', 2.00, 2, 'batata_doce', NULL, 10);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Batata Monalisa(Kg)', 5.59, 2, 'batata_monalisa', NULL, 30);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Berinjela(Kg)', 4.00, 2, 'berinjela', NULL, 10);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Berinjela', 16.50, 1, 'alcatra_com_maminha', NULL, 10);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Bohemia lata 350ml', 2.29, 3, 'bohemia_350ml', NULL, 200);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Skol lata 350ml', 2.19, 3, 'skol_350ml', NULL, 300);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Itaipava lata 350ml', 1.97, 3, 'itaipava_350ml', NULL, 300);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Carambola (Kg)', 7.00, 4, 'carambola', NULL, 10);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Cebola (3Kg)', 9.57, 2, 'cebola', NULL, 30);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Cenoura (Kg)', 3.00, 2, 'cenoura', NULL, 30);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Chester congelado', 25.50, 1, 'chester_congelado', NULL, 10);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Coração de frango congelado Seara (Kg)', 14.50, 1, 'coracao_frango_congelado_seara', NULL, 10);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Couve flor (Kg)', 5.00, 2, 'couve_flor', NULL, 10);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Coxa sobrecoxa (Kg)', 6.04, 1, 'coxa_sobrecoxa', NULL, 15);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Roast Beef(Coxão mole com toucinho - Kg)', 20.50, 1, 'roast_beef_coxaomole', NULL, 10);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Laranja lima (Kg)', 2.59, 4, 'laranja_lima', NULL, 30);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Desinfetante eucalipto Bak Ype 500ml', 2.09, 5, 'desinfetanteeucaliptobakype_500ml', NULL, 30);");
+        db.execSQL("INSERT INTO product VALUES(NULL, 'Desinfetante brisa do mar Pinho Bril 500ml', 2.96, 5, 'desinfetantebrisadomar_pinhobril_500ml', NULL, 30);");
+
+    }
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

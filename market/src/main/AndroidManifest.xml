@@ -10,15 +10,15 @@
         <activity
             android:name="com.viniciusnaka.marketintegration.MainActivity"
             android:label="@string/app_name" >
-        </activity>
-        <activity
-            android:name="com.viniciusnaka.marketintegration.ProductActivity"
-            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.viniciusnaka.marketintegration.ProductActivity"
+            android:label="@string/app_name" >
         </activity>
         <activity android:name="com.viniciusnaka.marketintegration.CartActivity" />
         <activity
@@ -27,6 +27,10 @@
         <activity
             android:name="com.viniciusnaka.marketintegration.CartListActivity"
             android:label="@string/title_activity_cart_list" >
+        </activity>
+        <activity
+            android:name="com.viniciusnaka.marketintegration.ProductsCartActivity"
+            android:label="@string/title_activity_products_cart" >
         </activity>
     </application>
 

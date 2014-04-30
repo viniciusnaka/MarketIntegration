@@ -53,14 +53,14 @@ public class ProductActivity extends ActionBarActivity {
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
-	public static class PlaceholderFragment extends Fragment {
+	public static class PlaceholderFragment extends Fragment implements View.OnClickListener {
 
         public PlaceholderFragment() {
         }
 
-        private List<ProductBean> productBeanList = new ArrayList<ProductBean>();
+        private List<ProductBean> productBeanList;
         private ListView listViewProdutos;
-        private Button btnCart, btnAdd, btnCartList;
+        private Button btnAdd;
         private ProductDB productDB;
         private static final int PAGE_ADD = 1;
 
@@ -71,42 +71,30 @@ public class ProductActivity extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.fragment_product, container,
                     false);
 
-            listViewProdutos = (ListView) rootView.findViewById(R.id.listView1);
+            listViewProdutos = (ListView) rootView.findViewById(R.id.listViewProduct);
             // pego os dados que aparecerao na tela
             productDB = new ProductDB(rootView.getContext());
             productBeanList = productDB.getProducts();
-
-            //productBeanList = GenerateUtil.generateproductList();
-
-            btnCart = (Button) rootView.findViewById(R.id.btnCart);
-            btnCart.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent it = new Intent(view.getContext(), CartActivity.class);
-                    startActivity(it);
-                }
-            });
-
             btnAdd = (Button) rootView.findViewById(R.id.btnAddProduct);
-            btnAdd.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent it = new Intent(view.getContext(), ProductCrudActivity.class);
-                    startActivityForResult(it, PAGE_ADD);
-                }
-            });
-
-            btnCartList = (Button) rootView.findViewById(R.id.btnCartList);
-            btnCartList.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent it = new Intent(view.getContext(), CartListActivity.class);
-                    startActivity(it);
-                }
-            });
 
             // monto o adapter com o contexto da tela e os dados para o listView
-            ProductAdapter adapter = new ProductAdapter(rootView.getContext(), productBeanList);
+            ProductAdapter adapter = new ProductAdapter(getActivity(), productBeanList);
+
+            adapter.setChangeProduct(new ProductAdapter.ChangeProduct() {
+                @Override
+                public void onDeleteProduct(ProductBean productBeanLoad) {
+                    if(productDB.delete(productBeanLoad)){
+                        Toast.makeText(getActivity(), "Produto "+productBeanLoad.getName() + " deletado com sucesso!",
+                                Toast.LENGTH_SHORT);
+                    } else {
+                        Toast.makeText(getActivity(), "Erro ao deletar o Produto "+productBeanLoad.getName()+ ".",
+                                Toast.LENGTH_SHORT);
+                    }
+                }
+            });
+
+            btnAdd.setOnClickListener(this);
+
             // passo o adapter que fara o listView funcionar
             listViewProdutos.setAdapter(adapter);
 
@@ -115,6 +103,8 @@ public class ProductActivity extends ActionBarActivity {
 
             return rootView;
         }
+
+
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent it) {
@@ -135,6 +125,12 @@ public class ProductActivity extends ActionBarActivity {
                 ProductAdapter adapter = new ProductAdapter(getActivity(), productBeanList);
                 listViewProdutos.setAdapter(adapter);
             }
+        }
+
+        @Override
+        public void onClick(View view) {
+            Intent it = new Intent(view.getContext(), ProductCrudActivity.class);
+            startActivityForResult(it, PAGE_ADD);
         }
     }
 }

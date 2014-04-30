@@ -9,5 +9,6 @@
     <string name="title_activity_product_crud">ProductCrudActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_cart_list">CartListActivity</string>
+    <string name="title_activity_products_cart">ProductsCartActivity</string>
 
 </resources>

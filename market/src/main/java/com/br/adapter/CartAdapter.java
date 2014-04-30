@@ -5,11 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.*;
-
+import android.widget.BaseAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import com.br.bean.ProductBean;
 import com.br.generate.GenerateUtil;
-import com.viniciusnaka.marketintegration.*;
+import com.viniciusnaka.marketintegration.R;
 
 import java.util.List;
 

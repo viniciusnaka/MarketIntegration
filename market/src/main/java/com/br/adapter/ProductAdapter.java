@@ -1,7 +1,5 @@
 package com.br.adapter;
 
-import java.util.List;
-
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -12,17 +10,16 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.br.bean.ProductBean;
-import com.br.generate.GenerateUtil;
 import com.viniciusnaka.marketintegration.ProductCrudActivity;
 import com.viniciusnaka.marketintegration.R;
+
+import java.util.List;
 
 /**
  * Created by vinicius on 4/13/14.
  */
-public class ProductAdapter extends BaseAdapter{
+public class ProductAdapter extends BaseAdapter implements OnClickListener {
 
     private List<ProductBean> productList;
     private Context context;
@@ -34,6 +31,16 @@ public class ProductAdapter extends BaseAdapter{
         this.productList = productList;
         // carrego o objeto que eh capaz de carrega XML e montar um objeto na memoria
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    private ChangeProduct changeProduct;
+
+    public interface ChangeProduct{
+        public void onDeleteProduct(ProductBean productBean);
+    }
+
+    public void setChangeProduct(ChangeProduct changeProduct) {
+        this.changeProduct = changeProduct;
     }
 
     @Override
@@ -58,42 +65,28 @@ public class ProductAdapter extends BaseAdapter{
             convertView = layoutInflater.inflate(R.layout.item_product, null);
         }
 
-        Button btnCartAdd, btnEditProduct;
-        TextView txtName, txtPrice;
-        ImageView imgProduct = (ImageView) convertView.findViewById(R.id.imageProduct);
+        Button btnEditProduct, btnDeleteProduct;
+        TextView txtName, txtPrice, txtQtde;
+        ImageView imgProduct = (ImageView) convertView.findViewById(R.id.imgProduct);
 
         txtName = (TextView) convertView.findViewById(R.id.txtNameProduct);
-        txtPrice = (TextView) convertView.findViewById(R.id.txtPriceListProduct);
+        txtPrice = (TextView) convertView.findViewById(R.id.txtPriceProduct);
+        txtQtde = (TextView) convertView.findViewById(R.id.txtQtdeProduct);
 
-        btnCartAdd = (Button) convertView.findViewById(R.id.btnAddProduct);
         btnEditProduct = (Button) convertView.findViewById(R.id.btnEditProduct);
+        btnDeleteProduct = (Button) convertView.findViewById(R.id.btnDeleteProduct);
 
         ProductBean productBeanLoad = productList.get(position);
-        
-        // imgBtnCartAdd.setTag(productBeanLoad);
-        // imgBtnCartAdd.setOnClickListener(this);
-        btnCartAdd.setTag(productBeanLoad);
-        btnCartAdd.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ProductBean productBeanLoad = (ProductBean) view.getTag();
-                cartAdd(view, productBeanLoad);
-            }
-        });
 
         btnEditProduct.setTag(productBeanLoad);
-        btnEditProduct.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ProductBean productBeanLoad = (ProductBean) view.getTag();
-                Intent it = new Intent(context, ProductCrudActivity.class);
-                it.putExtra("product", productBeanLoad);
-                context.startActivity(it);
-            }
-        });
-        
+        btnEditProduct.setOnClickListener(this);
+
+        btnDeleteProduct.setTag(productBeanLoad);
+        btnDeleteProduct.setOnClickListener(this);
+
         txtName.setText(productBeanLoad.getName());
-        txtPrice.setText("R$ "+productBeanLoad.getPrice());
+        txtQtde.setText(productBeanLoad.getStock().toString());
+        txtPrice.setText(productBeanLoad.getPrice().toString());
         int idImage = convertView.getResources().getIdentifier("com.viniciusnaka.marketintegration:drawable/"
                 + productBeanLoad.getImg(), null, null);
         //imgProduct.setImageResource(Integer.parseInt(productBeanLoad.getImg().replaceAll("[\"]","")));
@@ -102,25 +95,24 @@ public class ProductAdapter extends BaseAdapter{
         return convertView;
     }
 
-    public void cartAdd(View view, ProductBean productBeanLoad){
-        GenerateUtil.cart.add(productBeanLoad);
-        Toast.makeText(context, "Adicionado " + productBeanLoad.getName() + " ao Carrinho", Toast.LENGTH_SHORT).show();
-    }
-
-    public void quantityUp(View view, ProductBean productBeanLoad){
-        if(productBeanLoad.getQuantity() <= productBeanLoad.getStock()) {
-            productBeanLoad.setQuantity(productBeanLoad.getQuantity() + 1);
-        } else {
-            Toast.makeText(context, "Disponível em Estoque: " + productBeanLoad.getStock(), Toast.LENGTH_SHORT).show();
+    @Override
+    public void onClick(View view) {
+        if(changeProduct != null) {
+            ProductBean productBeanLoad = (ProductBean) view.getTag();
+            switch (view.getId()) {
+                case R.id.btnDeleteProduct:
+                    changeProduct.onDeleteProduct(productBeanLoad);
+                    notifyDataSetChanged();
+                    break;
+                case R.id.btnEditProduct:
+                    Intent it = new Intent(context, ProductCrudActivity.class);
+                    it.putExtra("product", productBeanLoad);
+                    context.startActivity(it);
+                    break;
+            }
         }
     }
 
-    public void quantityDown(View view, ProductBean productBeanLoad){
-        if(productBeanLoad.getQuantity() > 1){
-            productBeanLoad.setQuantity(productBeanLoad.getQuantity()-1);
-        } else {
-            Toast.makeText(context, "Quantidade mínima: 1", Toast.LENGTH_SHORT).show();
-        }
-    }
+
 
 }

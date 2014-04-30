@@ -50,7 +50,7 @@ public class MainActivity extends ActionBarActivity {
 	 */
 	public static class PlaceholderFragment extends Fragment {
 		
-		private Button btnCreateProduct, btnListProduct;
+		private Button btnCartList, btnProductList, btnShopping;
 		
 		public PlaceholderFragment() {
 		}
@@ -60,20 +60,21 @@ public class MainActivity extends ActionBarActivity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_main, container,
 					false);
-			
-			btnCreateProduct = (Button) rootView.findViewById(R.id.button1);
-			btnListProduct = (Button) rootView.findViewById(R.id.button2);
-			
-			btnCreateProduct.setOnClickListener(new OnClickListener() {
+
+            btnCartList = (Button) rootView.findViewById(R.id.btnCartList);
+            btnProductList = (Button) rootView.findViewById(R.id.btnProductList);
+            btnShopping = (Button) rootView.findViewById(R.id.btnShopping);
+
+            btnCartList.setOnClickListener(new OnClickListener() {
 				
 				@Override
 				public void onClick(View v) {
-					Intent it = new Intent(getActivity(), ProductCrudActivity.class);
+					Intent it = new Intent(getActivity(), CartListActivity.class);
 					startActivity(it);					
 				}
 			});
 			
-			btnListProduct.setOnClickListener(new OnClickListener() {
+			btnProductList.setOnClickListener(new OnClickListener() {
 				
 				@Override
 				public void onClick(View v) {
@@ -81,8 +82,17 @@ public class MainActivity extends ActionBarActivity {
 					startActivity(it);										
 				}
 			});
-			
-			return rootView;
+
+            btnShopping.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    Intent it = new Intent(getActivity(), ProductsCartActivity.class);
+                    startActivity(it);
+                }
+            });
+
+            return rootView;
 		}
 	}
 

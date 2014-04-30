@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <ImageView
+            android:id="@+id/imgProductsCart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/txtNameProductsCart"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_launcher" />
+
+    <TextView
+            android:id="@+id/txtNameProductsCart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/txtPriceProductsCart"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/imgProductsCart"
+            android:gravity="center"
+            android:text="Name"
+            android:layout_toLeftOf="@+id/txtPriceProductsCart"/>
+
+    <Button
+            android:id="@+id/btnAddProductsCart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+
+    <TextView
+            android:id="@+id/txtPriceProductsCart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Preço"
+            android:layout_alignParentTop="true"
+            android:layout_alignBottom="@+id/btnAddProductsCart"
+            android:layout_toLeftOf="@+id/btnAddProductsCart"/>
+
+</RelativeLayout>
