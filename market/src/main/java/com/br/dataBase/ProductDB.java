@@ -24,8 +24,7 @@ public class ProductDB {
 	}
 	
 	public ProductBean salvar(ProductBean productBean){
-		boolean success = false;
-        sqlLiteDatabase.beginTransaction();
+		sqlLiteDatabase.beginTransaction();
 		
 		try {
 			
@@ -53,12 +52,13 @@ public class ProductDB {
 			}
 			
 			if(result != -1){
-                productBean.setId((int) result);
+                if(insert) {
+                    productBean.setId((int) result);
+                }
                 sqlLiteDatabase.setTransactionSuccessful();
 			} else {
                 productBean = null;
             }
-			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -91,19 +91,23 @@ public class ProductDB {
         List<ProductBean> listProductBeans = new ArrayList<ProductBean>();
 
         // faco a consulta no banco usando um comando SQL puro
-        Cursor cursor = sqlLiteDatabase.rawQuery("SELECT id, name, price, id_category, img, stock FROM product where stock > ? order by name", new String[]{"0"});
+        Cursor cursor = sqlLiteDatabase.rawQuery("SELECT p.id, p.name, p.price, p.id_category, c.name, p.img, p.stock FROM product p " +
+                "INNER JOIN category c ON p.id_category = c.id AND p.stock > ? ORDER BY p.name", new String[]{"0"});
         // percorro cada linha da consulta e armazeno na lista
         while(cursor.moveToNext()){
             ProductBean productBean = new ProductBean();
             productBean.setId(cursor.getInt(0));
             productBean.setName(cursor.getString(1));
             productBean.setPrice(new BigDecimal(cursor.getDouble(2)).setScale(2, RoundingMode.HALF_UP));
+
             CategoryBean categoryBean = new CategoryBean();
             categoryBean.setId(cursor.getInt(3));
+            categoryBean.setName(cursor.getString(4));
+
             productBean.setCategoryBean(categoryBean);
-            productBean.setImg(cursor.getString(4));
+            productBean.setImg(cursor.getString(5));
             productBean.setQuantity(1);
-            productBean.setStock(cursor.getInt(5));
+            productBean.setStock(cursor.getInt(6));
 
             listProductBeans.add(productBean);
         }

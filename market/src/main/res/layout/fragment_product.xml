@@ -8,20 +8,74 @@
                 android:paddingTop="@dimen/activity_vertical_margin"
                 tools:context="com.viniciusnaka.market.ProductActivity$PlaceholderFragment" >
 
-    <ListView
-            android:id="@+id/listViewProduct"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/btnAddProduct" />
-
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add"
             android:id="@+id/btnAddProduct"
-            android:layout_alignParentTop="true"
+            android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnAddProduct"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="20dp"
+            android:id="@+id/linearLayout">
+
+        <TextView
+                android:id="@+id/txtNameProduct"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Name"
+                android:layout_marginLeft="35dp"
+                android:layout_alignTop="@+id/txtQtdeProduct"
+                android:layout_toRightOf="@+id/btnAddProduct"/>
+
+        <TextView
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:text="Qtde"
+                android:id="@+id/txtQtdeProduct"
+                android:gravity="center"
+                android:layout_toRightOf="@+id/btnAddProduct"
+                android:layout_marginLeft="10dp"/>
+
+        <TextView
+                android:id="@+id/txtPriceProduct"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Preço"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="50dp"
+                android:layout_above="@+id/listViewProduct"
+                android:layout_alignRight="@+id/listViewProduct"
+                android:layout_alignEnd="@+id/listViewProduct"/>
+
+    </LinearLayout>
+
+    <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/listViewProduct"
+            android:layout_below="@+id/linearLayout"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"/>
+    <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinnerCategories"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/linearLayout"
+            android:layout_alignEnd="@+id/linearLayout"
+            android:layout_toRightOf="@+id/btnAddProduct"
+            android:layout_above="@+id/linearLayout"
+            android:layout_marginLeft="20dp"
+            android:prompt="@string/spinner_categories"
+            />
 
 </RelativeLayout>

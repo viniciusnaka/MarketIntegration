@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.viniciusnaka.marketintegration" >
 
+    <uses-sdk
+        android:maxSdkVersion="19"
+        android:minSdkVersion="8" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -31,6 +37,14 @@
         <activity
             android:name="com.viniciusnaka.marketintegration.ProductsCartActivity"
             android:label="@string/title_activity_products_cart" >
+        </activity>
+        <activity
+            android:name="com.viniciusnaka.marketintegration.UserListActivity"
+            android:label="@string/title_activity_user_list" >
+        </activity>
+        <activity
+            android:name="com.viniciusnaka.marketintegration.UserCrudActivity"
+            android:label="@string/title_activity_user_crud" >
         </activity>
     </application>
 

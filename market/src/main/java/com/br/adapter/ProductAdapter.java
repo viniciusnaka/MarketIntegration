@@ -6,10 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 import com.br.bean.ProductBean;
 import com.viniciusnaka.marketintegration.ProductCrudActivity;
 import com.viniciusnaka.marketintegration.R;
@@ -37,6 +34,7 @@ public class ProductAdapter extends BaseAdapter implements OnClickListener {
 
     public interface ChangeProduct{
         public void onDeleteProduct(ProductBean productBean);
+        public void onEditProduct(ProductBean productBean);
     }
 
     public void setChangeProduct(ChangeProduct changeProduct) {
@@ -65,32 +63,29 @@ public class ProductAdapter extends BaseAdapter implements OnClickListener {
             convertView = layoutInflater.inflate(R.layout.item_product, null);
         }
 
-        Button btnEditProduct, btnDeleteProduct;
-        TextView txtName, txtPrice, txtQtde;
-        ImageView imgProduct = (ImageView) convertView.findViewById(R.id.imgProduct);
+        TextView txtName = (TextView) convertView.findViewById(R.id.txtNameProduct);
+        TextView txtPrice = (TextView) convertView.findViewById(R.id.txtPriceProduct);
+        TextView txtQtde = (TextView) convertView.findViewById(R.id.txtQtdeProduct);
 
-        txtName = (TextView) convertView.findViewById(R.id.txtNameProduct);
-        txtPrice = (TextView) convertView.findViewById(R.id.txtPriceProduct);
-        txtQtde = (TextView) convertView.findViewById(R.id.txtQtdeProduct);
-
-        btnEditProduct = (Button) convertView.findViewById(R.id.btnEditProduct);
-        btnDeleteProduct = (Button) convertView.findViewById(R.id.btnDeleteProduct);
+        ImageButton imgEditProduct = (ImageButton) convertView.findViewById(R.id.imgEditProduct);
+        ImageButton imgDeleteProduct = (ImageButton) convertView.findViewById(R.id.imgDeleteProduct);
 
         ProductBean productBeanLoad = productList.get(position);
 
-        btnEditProduct.setTag(productBeanLoad);
-        btnEditProduct.setOnClickListener(this);
+        imgEditProduct.setTag(productBeanLoad);
+        imgEditProduct.setOnClickListener(this);
 
-        btnDeleteProduct.setTag(productBeanLoad);
-        btnDeleteProduct.setOnClickListener(this);
+        imgDeleteProduct.setTag(productBeanLoad);
+        imgDeleteProduct.setOnClickListener(this);
+
+        ImageView imgProduct = (ImageView) convertView.findViewById(R.id.imgProduct);
+        int idImage = convertView.getResources().getIdentifier("com.viniciusnaka.marketintegration:drawable/"
+                + productBeanLoad.getImg(), null, null);
+        imgProduct.setImageResource(idImage);
 
         txtName.setText(productBeanLoad.getName());
         txtQtde.setText(productBeanLoad.getStock().toString());
         txtPrice.setText(productBeanLoad.getPrice().toString());
-        int idImage = convertView.getResources().getIdentifier("com.viniciusnaka.marketintegration:drawable/"
-                + productBeanLoad.getImg(), null, null);
-        //imgProduct.setImageResource(Integer.parseInt(productBeanLoad.getImg().replaceAll("[\"]","")));
-        imgProduct.setImageResource(idImage);
 
         return convertView;
     }
@@ -100,13 +95,11 @@ public class ProductAdapter extends BaseAdapter implements OnClickListener {
         if(changeProduct != null) {
             ProductBean productBeanLoad = (ProductBean) view.getTag();
             switch (view.getId()) {
-                case R.id.btnDeleteProduct:
+                case R.id.imgDeleteProduct:
                     changeProduct.onDeleteProduct(productBeanLoad);
                     break;
-                case R.id.btnEditProduct:
-                    Intent it = new Intent(context, ProductCrudActivity.class);
-                    it.putExtra("product", productBeanLoad);
-                    context.startActivity(it);
+                case R.id.imgEditProduct:
+                    changeProduct.onEditProduct(productBeanLoad);
                     break;
             }
         }

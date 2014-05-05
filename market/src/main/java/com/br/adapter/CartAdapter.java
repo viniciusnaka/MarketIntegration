@@ -5,10 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 import com.br.bean.ProductBean;
 import com.br.generate.GenerateUtil;
 import com.viniciusnaka.marketintegration.R;
@@ -23,7 +20,11 @@ public class CartAdapter extends BaseAdapter implements OnClickListener {
     private List<ProductBean> listProducts = GenerateUtil.cart;
     private Context context;
     private LayoutInflater inflater;
-    
+    private TextView txtNome, txtQtde, txtPreco;
+    private ImageView imgProduct;
+    private ImageButton imgBtnUpQtde, imgBtnDownQtde, imgBtnCartExclude;
+
+
     public CartAdapter(Context tela){
         // armazeno o contexto da tela e a lista com os dados que o listView precisa
         this.context = tela;
@@ -35,8 +36,8 @@ public class CartAdapter extends BaseAdapter implements OnClickListener {
     
     public interface ChangeItens{
         public void onRemoveItem(ProductBean productBean);
-        public void quantityUp(int position);
-        public void quantityDown(int position);
+        public boolean quantityUp(int position);
+        public boolean quantityDown(int position);
     } 
     
     public void setChangeItens(ChangeItens changeItens) {
@@ -69,13 +70,16 @@ public class CartAdapter extends BaseAdapter implements OnClickListener {
 
         // agora eu tenho certamente em convertView um objeto com todas as caracteristicas
         // do XML, puxo cada sub campo que eu necessite colocar dados
-        TextView txtNome = (TextView) convertView.findViewById(R.id.textView1);
-        TextView txtQtde = (TextView) convertView.findViewById(R.id.textView2);        
-        TextView txtPreco = (TextView) convertView.findViewById(R.id.textView3);
-        ImageView imgProduct = (ImageView) convertView.findViewById(R.id.imageView1);
-        ImageButton imgBtnUpQtde = (ImageButton) convertView.findViewById(R.id.imageButton1);
-        ImageButton imgBtnDownQtde = (ImageButton) convertView.findViewById(R.id.imageButton2);
-        ImageButton imgBtnCartExclude = (ImageButton) convertView.findViewById(R.id.imageButton3);
+        txtNome = (TextView) convertView.findViewById(R.id.textView1);
+        txtQtde = (TextView) convertView.findViewById(R.id.textView2);
+        txtPreco = (TextView) convertView.findViewById(R.id.textView3);
+        imgProduct = (ImageView) convertView.findViewById(R.id.imageView1);
+        imgBtnUpQtde = (ImageButton) convertView.findViewById(R.id.imageButton1);
+        imgBtnUpQtde.setImageResource(R.drawable.arrow_up);
+        imgBtnDownQtde = (ImageButton) convertView.findViewById(R.id.imageButton2);
+        imgBtnDownQtde.setImageResource(R.drawable.arrow_down);
+        imgBtnCartExclude = (ImageButton) convertView.findViewById(R.id.imageButton3);
+        imgBtnCartExclude.setImageResource(R.drawable.shopcartexclude);
 
         // puxo os dados do item que o listView pediu e preencho os dados do item
         ProductBean productBeanLoad = listProducts.get(position);
@@ -104,14 +108,23 @@ public class CartAdapter extends BaseAdapter implements OnClickListener {
     public void onClick(View view) {
         if(changeItens != null){
         	int position;
+            Boolean quantity;
         	switch (view.getId()){
 	        	case R.id.imageButton1:
 	        		position = (Integer) view.getTag();
-	        		changeItens.quantityUp(position);
+	        		quantity = changeItens.quantityUp(position);
+                    if(!quantity){
+                        Toast.makeText(context, "Quantidade máxima disponível do produto", Toast.LENGTH_SHORT).show();
+                    }
+                    imgBtnUpQtde.setEnabled(quantity);
                     break;
 	        	case R.id.imageButton2:
 	        		position = (Integer) view.getTag();
-	        		changeItens.quantityDown(position);
+	        		quantity = changeItens.quantityDown(position);
+                    if(!quantity){
+                        Toast.makeText(context, "Quantidade mínima: 1", Toast.LENGTH_SHORT).show();
+                    }
+                    imgBtnDownQtde.setEnabled(quantity);
                     break;
 	        	case R.id.imageButton3:
 	        		ProductBean productBeanLoad = (ProductBean) view.getTag();

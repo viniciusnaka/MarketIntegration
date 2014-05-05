@@ -19,7 +19,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		// nesse momento devo rodar comandos que criem as tabelas e linhas necessarias para o app funcionar
 
         // criando a tabela user
-        db.execSQL("CREATE  TABLE user(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, name VARCHAR NOT NULL, password VARCHAR NOT NULL, email VARCHAR NOT NULL)");
+        db.execSQL("CREATE  TABLE user(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, name VARCHAR NOT NULL, login VARCHAR NOT NULL, password VARCHAR NOT NULL, email VARCHAR NOT NULL, address VARCHAR NOT NULL, number VARCHAR NOT NULL, complement VARCHAR NULL, zipcode VARCHAR NOT NULL, neighborhood VARCHAR NOT NULL, city VARCHAR NOT NULL, state VARCHAR NOT NULL, date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP)");
         // criando a tabela product
         db.execSQL("CREATE TABLE product(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, name VARCHAR NOT NULL, price NUMERIC NOT NULL, id_category INTEGER NOT NULL, img VARCHAR NOT NULL, quantity INTEGER NULL, stock INTEGER NOT NULL)");
         // criando a tabela sub_category
@@ -48,7 +48,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO product VALUES(NULL, 'Batata doce rosada(Kg)', 2.00, 2, 'batata_doce', NULL, 10);");
         db.execSQL("INSERT INTO product VALUES(NULL, 'Batata Monalisa(Kg)', 5.59, 2, 'batata_monalisa', NULL, 30);");
         db.execSQL("INSERT INTO product VALUES(NULL, 'Berinjela(Kg)', 4.00, 2, 'berinjela', NULL, 10);");
-        db.execSQL("INSERT INTO product VALUES(NULL, 'Berinjela', 16.50, 1, 'alcatra_com_maminha', NULL, 10);");
         db.execSQL("INSERT INTO product VALUES(NULL, 'Bohemia lata 350ml', 2.29, 3, 'bohemia_350ml', NULL, 200);");
         db.execSQL("INSERT INTO product VALUES(NULL, 'Skol lata 350ml', 2.19, 3, 'skol_350ml', NULL, 300);");
         db.execSQL("INSERT INTO product VALUES(NULL, 'Itaipava lata 350ml', 1.97, 3, 'itaipava_350ml', NULL, 300);");
@@ -58,7 +57,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO product VALUES(NULL, 'Chester congelado', 25.50, 1, 'chester_congelado', NULL, 10);");
         db.execSQL("INSERT INTO product VALUES(NULL, 'Coração de frango congelado Seara (Kg)', 14.50, 1, 'coracao_frango_congelado_seara', NULL, 10);");
         db.execSQL("INSERT INTO product VALUES(NULL, 'Couve flor (Kg)', 5.00, 2, 'couve_flor', NULL, 10);");
-        db.execSQL("INSERT INTO product VALUES(NULL, 'Coxa sobrecoxa (Kg)', 6.04, 1, 'coxa_sobrecoxa', NULL, 15);");
         db.execSQL("INSERT INTO product VALUES(NULL, 'Roast Beef(Coxão mole com toucinho - Kg)', 20.50, 1, 'roast_beef_coxaomole', NULL, 10);");
         db.execSQL("INSERT INTO product VALUES(NULL, 'Laranja lima (Kg)', 2.59, 4, 'laranja_lima', NULL, 30);");
         db.execSQL("INSERT INTO product VALUES(NULL, 'Desinfetante eucalipto Bak Ype 500ml', 2.09, 5, 'desinfetanteeucaliptobakype_500ml', NULL, 30);");

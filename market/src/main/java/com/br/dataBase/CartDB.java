@@ -41,7 +41,6 @@ public class CartDB {
                 insert = false;
                 fieldsCart.put("id", cartBean.getId());
             }
-
             fieldsCart.put("id_user", 1);
             fieldsCart.put("price", cartBean.getPrice().toString());
             fieldsCart.put("date_create", new Date().toString());
@@ -49,8 +48,11 @@ public class CartDB {
             if(insert){
                 long resultCart = sqlLiteDatabase.insert("cart", null, fieldsCart);
                 success = true;
+
                 if(resultCart != -1){
                     for(ProductBean productBean : cartBean.getProductList()){
+
+                        // inserindo os produtos na tabela cart_item
                         ContentValues fieldsCartItem = new ContentValues();
                         fieldsCartItem.put("id_cart", resultCart);
                         fieldsCartItem.put("id_product", productBean.getId());
@@ -58,7 +60,19 @@ public class CartDB {
                         fieldsCartItem.put("quantity", productBean.getQuantity());
 
                         long resultCartItem = sqlLiteDatabase.insert("cart_item", null, fieldsCartItem);
+
                         if(resultCartItem != -1){
+
+                            // atualizando os produtos apos cadastro do cart
+                            ContentValues fieldsProduct = new ContentValues();
+                            fieldsProduct.put("id", productBean.getId());
+                            fieldsProduct.put("name", productBean.getName());
+                            fieldsProduct.put("price", productBean.getPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+                            fieldsProduct.put("id_category", productBean.getCategoryBean().getId());
+                            fieldsProduct.put("img", productBean.getImg());
+                            fieldsProduct.put("stock", (productBean.getStock() - productBean.getQuantity()));
+
+                            sqlLiteDatabase.update("product", fieldsProduct, "id = ?", new String[]{productBean.getId().toString()});
                             sqlLiteDatabase.setTransactionSuccessful();
                         }
                     }

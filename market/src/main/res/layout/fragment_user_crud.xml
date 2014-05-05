@@ -1,0 +1,146 @@
+<LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android" android:weightSum="1">
+
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Dados Pessoais"
+            android:id="@+id/txtDataPersonal"
+            android:layout_weight="0.14"
+            android:gravity="center_vertical" />
+
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editTextUserName"
+            android:hint="Nome"/>
+
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editTextEmail"
+            android:hint="E-mail"/>
+
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editTextLogin"
+            android:hint="Login"/>
+
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editTextPassword"
+            android:inputType="textPassword"
+            android:hint="Senha"/>
+
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editTextConfirmPassword"
+            android:hint="Confirmar Senha"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Endereço"
+            android:id="@+id/txtAddress"
+            android:layout_weight="0.18"
+            android:gravity="center_vertical"/>
+
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+        <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextZipCode"
+                android:inputType="number"
+                android:hint="Cep"/>
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pesquisar"
+                android:id="@+id/btnSearchZipCode"
+                android:layout_gravity="center_horizontal"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/editTextZipCode"
+                android:layout_alignBottom="@+id/editTextZipCode"/>
+
+    </RelativeLayout>
+
+
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editTextAddress"
+            android:hint="Endereço"/>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextNumberAddress"
+                android:hint="Número"/>
+
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextComplement"
+                android:hint="Complemento"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/editTextNumberAddress"/>
+
+        <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextNeighborhood"
+                android:layout_below="@+id/editTextNumberAddress"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:hint="Bairro"/>
+
+        <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextCity"
+                android:hint="Cidade"
+                android:layout_below="@+id/editTextNeighborhood"
+                android:layout_toRightOf="@+id/spinnerStates"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"/>
+
+        <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinnerStates"
+                android:layout_below="@+id/editTextNeighborhood"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@+id/editTextComplement"
+                android:layout_alignBottom="@+id/editTextCity"/>
+
+
+    </RelativeLayout>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:text="Salvar"
+            android:id="@+id/btnSaveUser"
+            android:layout_weight="0.03"
+            android:layout_marginTop="10dp"/>
+
+</LinearLayout>

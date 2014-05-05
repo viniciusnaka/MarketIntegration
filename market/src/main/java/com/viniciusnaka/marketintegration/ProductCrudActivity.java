@@ -96,15 +96,13 @@ public class ProductCrudActivity extends ActionBarActivity {
                 });
 
                 // update
-                if(getActivity().getIntent() != null){
+                if(getActivity().getIntent().getSerializableExtra("product") != null){
                     ProductBean productBeanLoad = (ProductBean) getActivity().getIntent().getSerializableExtra("product");
-                    if(productBeanLoad != null){
-                        editName.setText(productBeanLoad.getName());
-                        editPrice.setText(productBeanLoad.getPrice().toString());
-                        editStock.setText(productBeanLoad.getStock().toString());
-                        editImage.setText(productBeanLoad.getImg().toString());
-                        btnSave.setTag(productBeanLoad);
-                    }
+                    editName.setText(productBeanLoad.getName());
+                    editPrice.setText(productBeanLoad.getPrice().toString());
+                    editStock.setText(productBeanLoad.getStock().toString());
+                    editImage.setText(productBeanLoad.getImg().toString());
+                    btnSave.setTag(productBeanLoad);
                 }
 
                 btnSave.setOnClickListener(this);
@@ -141,13 +139,13 @@ public class ProductCrudActivity extends ActionBarActivity {
             productBean = productDB.salvar(productBean);
 			if(productBean != null){
 				Intent it = new Intent();
-                it.putExtra("msg", create ? "Produto salvo com sucesso!" : "Atualizado com sucesso!");
+                it.putExtra("msg", create ? "Produto salvo com sucesso!" : "Produto atualizado com sucesso!");
                 it.putExtra("product", productBean);
                 getActivity().setResult(RESULT_OK, it);
                 getActivity().finish();
 			}else{
 				Intent it = new Intent();
-                it.putExtra("msg", create ? "Falha ao cadastrar o Produto!" : "Falha ao atualizar!");
+                it.putExtra("msg", create ? "Falha ao cadastrar o Produto!" : "Falha ao atualizar o Produto!");
                 getActivity().setResult(RESULT_CANCELED, it);
                 getActivity().finish();
 			}

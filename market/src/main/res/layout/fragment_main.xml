@@ -28,6 +28,12 @@
             android:id="@+id/btnShopping"
             android:layout_below="@+id/btnProductList" android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Users List"
+            android:id="@+id/btnUserList" android:layout_below="@+id/btnShopping" android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
 
 
 </RelativeLayout>

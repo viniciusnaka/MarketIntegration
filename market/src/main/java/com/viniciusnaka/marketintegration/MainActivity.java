@@ -50,7 +50,7 @@ public class MainActivity extends ActionBarActivity {
 	 */
 	public static class PlaceholderFragment extends Fragment {
 		
-		private Button btnCartList, btnProductList, btnShopping;
+		private Button btnCartList, btnProductList, btnShopping, btnUserList;
 		
 		public PlaceholderFragment() {
 		}
@@ -64,6 +64,7 @@ public class MainActivity extends ActionBarActivity {
             btnCartList = (Button) rootView.findViewById(R.id.btnCartList);
             btnProductList = (Button) rootView.findViewById(R.id.btnProductList);
             btnShopping = (Button) rootView.findViewById(R.id.btnShopping);
+            btnUserList = (Button) rootView.findViewById(R.id.btnUserList);
 
             btnCartList.setOnClickListener(new OnClickListener() {
 				
@@ -88,6 +89,14 @@ public class MainActivity extends ActionBarActivity {
                 @Override
                 public void onClick(View v) {
                     Intent it = new Intent(getActivity(), ProductsCartActivity.class);
+                    startActivity(it);
+                }
+            });
+
+            btnUserList.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                   Intent it = new Intent(getActivity(), UserListActivity.class);
                     startActivity(it);
                 }
             });

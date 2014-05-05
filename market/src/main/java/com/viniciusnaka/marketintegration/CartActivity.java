@@ -86,31 +86,37 @@ public class CartActivity extends ActionBarActivity {
             // pego os dados que aparecerao na tela
             listProducts = GenerateUtil.cart;
 
-            // monto o adapter com o contexto da tela e os dados para o listView
+            // monto o adapter com o contexto da tela
             CartAdapter adapter = new CartAdapter(getActivity());
             
             adapter.setChangeItens(new CartAdapter.ChangeItens() {
 				
 				@Override
-				public void quantityUp(int position) {
+				public boolean quantityUp(int position) {
+                    boolean quantityOK = true;
 					ProductBean productBeanLoad = GenerateUtil.cart.get(position);
-					productBeanLoad.setQuantity(productBeanLoad.getQuantity()+1);
-					txtQtdeItens.setText("Qtde Itens("+ GenerateUtil.getQtdeItens() +")");
-                    txtValue.setText(GenerateUtil.getValueCart().toString());
-					//return GenerateUtil.getValueCart();
+                    if(productBeanLoad.getQuantity() < productBeanLoad.getStock()){
+                        productBeanLoad.setQuantity(productBeanLoad.getQuantity()+1);
+                        txtQtdeItens.setText("Qtde Itens("+ GenerateUtil.getQtdeItens() +")");
+                        txtValue.setText(GenerateUtil.getValueCart().toString());
+                    } else {
+                        quantityOK = false;
+                    }
+					return quantityOK;
 				}
 				
 				@Override
-				public void quantityDown(int position) {
-					ProductBean productBeanLoad = GenerateUtil.cart.get(position);
+				public boolean quantityDown(int position) {
+                    boolean quantityOK = true;
+                    ProductBean productBeanLoad = GenerateUtil.cart.get(position);
 					if(productBeanLoad.getQuantity() > 1){
 			            productBeanLoad.setQuantity(productBeanLoad.getQuantity()-1);
 			            txtQtdeItens.setText("Qtde Itens("+ GenerateUtil.getQtdeItens() +")");
 			            txtValue.setText(GenerateUtil.getValueCart().toString());
 			        } else {
-			            Toast.makeText(getActivity(), "Quantidade mínima: 1", Toast.LENGTH_SHORT).show();
+                        quantityOK = false;
 			        }										
-					//return GenerateUtil.getValueCart();
+					return quantityOK;
 				}
 				
 				@Override

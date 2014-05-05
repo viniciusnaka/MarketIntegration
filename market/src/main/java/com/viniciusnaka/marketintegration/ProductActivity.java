@@ -6,11 +6,10 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.*;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.ListView;
+import android.widget.*;
 
-import android.widget.Toast;
 import com.br.adapter.ProductAdapter;
+import com.br.bean.CategoryBean;
 import com.br.bean.ProductBean;
 import com.br.dataBase.ProductDB;
 
@@ -63,11 +62,9 @@ public class ProductActivity extends ActionBarActivity {
         private Button btnAdd;
         private ProductDB productDB;
         private static final int PAGE_ADD = 1;
-        private ProductAdapter adapter;
-
-        public ProductAdapter getAdapter() {
-            return adapter;
-        }
+        private static final int PAGE_EDIT = 2;
+        //private ProductAdapter adapter;
+        private Spinner spinnerCategories;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,23 +77,30 @@ public class ProductActivity extends ActionBarActivity {
             productDB = new ProductDB(rootView.getContext());
             productBeanList = productDB.getProducts();
             btnAdd = (Button) rootView.findViewById(R.id.btnAddProduct);
+            spinnerCategories = (Spinner) rootView.findViewById(R.id.spinnerCategories);
 
             // monto o adapter com o contexto da tela e os dados para o listView
-            adapter = new ProductAdapter(getActivity(), productBeanList);
+            ProductAdapter adapter = createProductAdapter();
+            //new ProductAdapter(getActivity(), productBeanList);
 
-            adapter.setChangeProduct(new ProductAdapter.ChangeProduct() {
+            ArrayAdapter arrayAdapterCategories = new ArrayAdapter<CategoryBean>(getActivity(), android.R.layout.simple_spinner_item, productDB.getCategories());
+            arrayAdapterCategories.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerCategories.setAdapter(arrayAdapterCategories);
+
+            // change sort by category
+            spinnerCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
-                public void onDeleteProduct(ProductBean productBeanLoad) {
-                    if(productDB.delete(productBeanLoad)){
-                        Toast.makeText(getActivity(), "Produto "+productBeanLoad.getName() + " deletado com sucesso!",
-                                Toast.LENGTH_SHORT).show();
-                        productBeanList.remove(productBeanLoad);
-                        adapter.notifyDataSetChanged();
-                    } else {
-                        Toast.makeText(getActivity(), "Erro ao deletar o Produto "+productBeanLoad.getName()+ ".",
-                                Toast.LENGTH_SHORT).show();
-                    }
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    CategoryBean categoryBeanLoad = (CategoryBean) spinnerCategories.getSelectedItem();
+                    getProductBeanListByCategory(categoryBeanLoad);
+                    ProductAdapter adapter = createProductAdapter();
+                            //new ProductAdapter(getActivity(), productBeanList);
+                    listViewProdutos.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
                 }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {}
             });
 
             btnAdd.setOnClickListener(this);
@@ -104,41 +108,76 @@ public class ProductActivity extends ActionBarActivity {
             // passo o adapter que fara o listView funcionar
             listViewProdutos.setAdapter(adapter);
 
-            // trato clique nos itens da lista
-            //listViewProdutos.setOnItemClickListener(this);
-
             return rootView;
         }
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent it) {
-            if (requestCode == PAGE_ADD){
-                Bundle param = it != null ? it.getExtras() : null;
-                if(param != null){
-                    ProductBean productBean = (ProductBean) param.get("product");
-                    productBeanList.add(productBean);
-                    listViewProdutos.setAdapter(adapter = new ProductAdapter(getActivity(), productBeanList));
-                    adapter.notifyDataSetChanged();
-                    Toast.makeText(getActivity(), param.get("msg").toString() , Toast.LENGTH_SHORT)
-                            .show();
+            Bundle param = it != null ? it.getExtras() : null;
+            if(param != null){
+                ProductBean productBeanLoad = (ProductBean) param.get("product");
+                ProductAdapter adapter = (ProductAdapter) listViewProdutos.getAdapter();
+                // insert
+                if(requestCode == PAGE_ADD){
+                    productBeanList.add(productBeanLoad);
+                } else {
+                    // update
+                    if(!productBeanList.get(0).getCategoryBean().equals(productBeanLoad.getCategoryBean())){
+                        for(ProductBean p : productBeanList){
+                            if(p.getId().equals(productBeanLoad.getId())){
+                                productBeanList.remove(p);
+                            }
+                        }
+                    }
                 }
+                adapter.notifyDataSetChanged();
+                Toast.makeText(getActivity(), param.get("msg").toString() , Toast.LENGTH_SHORT)
+                        .show();
             }
         }
-
-        /*@Override
-        public void onResume() {
-            super.onResume();
-            if(listViewProdutos != null){
-                productBeanList = productDB.getProducts();
-                ProductAdapter adapter = new ProductAdapter(getActivity(), productBeanList);
-                listViewProdutos.setAdapter(adapter);
-            }
-        }*/
 
         @Override
         public void onClick(View view) {
             Intent it = new Intent(view.getContext(), ProductCrudActivity.class);
             startActivityForResult(it, PAGE_ADD);
+        }
+
+        private void getProductBeanListByCategory(CategoryBean categoryBean){
+            productBeanList = new ArrayList<ProductBean>();
+            for (ProductBean productBeanLoad : productDB.getProducts()){
+                if(productBeanLoad.getCategoryBean().equals(categoryBean)){
+                    productBeanList.add(productBeanLoad);
+                }
+            }
+        }
+
+        private ProductAdapter createProductAdapter(){
+            ProductAdapter adapter = new ProductAdapter(getActivity(), productBeanList);
+            // delete product
+            adapter.setChangeProduct(new ProductAdapter.ChangeProduct() {
+                @Override
+                public void onDeleteProduct(ProductBean productBeanLoad) {
+                    if(productDB.delete(productBeanLoad)){
+                        productBeanList.remove(productBeanLoad);
+                        ProductAdapter adapter = (ProductAdapter) listViewProdutos.getAdapter(); //new ProductAdapter(getActivity(), productBeanList);
+                        //listViewProdutos.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                        Toast.makeText(getActivity(), "Produto "+productBeanLoad.getName() + " deletado com sucesso!",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(), "Erro ao deletar o Produto "+productBeanLoad.getName()+ ".",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onEditProduct(ProductBean productBeanLoad) {
+                    Intent it = new Intent(getActivity(), ProductCrudActivity.class);
+                    it.putExtra("product", productBeanLoad);
+                    startActivityForResult(it, PAGE_EDIT);
+                }
+            });
+            return adapter;
         }
     }
 }
