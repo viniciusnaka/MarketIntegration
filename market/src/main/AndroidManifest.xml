@@ -39,7 +39,7 @@
             android:label="@string/title_activity_products_cart" >
         </activity>
         <activity
-            android:name="com.viniciusnaka.marketintegration.UserListActivity"
+            android:name=".UserActivity"
             android:label="@string/title_activity_user_list" >
         </activity>
         <activity

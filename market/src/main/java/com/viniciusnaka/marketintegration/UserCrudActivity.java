@@ -1,5 +1,6 @@
 package com.viniciusnaka.marketintegration;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -7,11 +8,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.os.Build;
 import android.widget.Button;
 import android.widget.EditText;
@@ -101,12 +98,15 @@ public class UserCrudActivity extends ActionBarActivity {
                 editTextUserName.setText(userBeanLoad.getUserName());
                 editTextEmail.setText(userBeanLoad.getEmail());
                 editTextLogin.setText(userBeanLoad.getLogin());
+                editTextPassword.setVisibility(View.INVISIBLE);
+                editTextConfirmPassword.setVisibility(View.INVISIBLE);
                 editTextZipCode.setText(userBeanLoad.getZipCode());
                 editTextAddress.setText(userBeanLoad.getAddress());
                 editTextNumberAddress.setText(userBeanLoad.getNumberAddress());
                 editTextComplement.setText(userBeanLoad.getComplement());
                 editTextNeighborhood.setText(userBeanLoad.getNeighborhood());
                 editTextCity.setText(userBeanLoad.getCity());
+                getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                 btnSaveUser.setTag(userBeanLoad);
             }
 
@@ -138,18 +138,20 @@ public class UserCrudActivity extends ActionBarActivity {
 
                     UserDB userDB = new UserDB(getActivity());
 
-                    userBean = userDB.salvar(userBean);
-                    if(userBean != null){
-                        Intent it = new Intent();
-                        it.putExtra("msg", create ? "Usuário salvo com sucesso!" : "Usuário atualizado com sucesso!");
-                        it.putExtra("user", userBean);
-                        getActivity().setResult(RESULT_OK, it);
-                        getActivity().finish();
-                    } else {
-                        Intent it = new Intent();
-                        it.putExtra("msg", create ? "Falha ao cadastrar o Usuário!" : "Falha ao atualizar Usuário!");
-                        getActivity().setResult(RESULT_CANCELED, it);
-                        getActivity().finish();
+                    if(validateFields(userBean)){
+                        userBean = userDB.salvar(userBean);
+                        if(userBean != null){
+                            Intent it = new Intent();
+                            it.putExtra("msg", create ? "Usuário salvo com sucesso!" : "Usuário atualizado com sucesso!");
+                            it.putExtra("user", userBean);
+                            getActivity().setResult(RESULT_OK, it);
+                            getActivity().finish();
+                        } else {
+                            Intent it = new Intent();
+                            it.putExtra("msg", create ? "Falha ao cadastrar o Usuário!" : "Falha ao atualizar Usuário!");
+                            getActivity().setResult(RESULT_CANCELED, it);
+                            getActivity().finish();
+                        }
                     }
 
                 }
@@ -203,6 +205,50 @@ public class UserCrudActivity extends ActionBarActivity {
             });
 
             return rootView;
+        }
+
+        private boolean validateFields(UserBean userBean){
+            boolean validate = true;
+            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+
+            // DADOS PESSOAIS
+            /*if(userBean == null){
+                validate = false;
+                alert.setTitle("Erro - Cadastro de Usuário").setMessage("Favor preencher os campos obrigatórios");
+                alert.setNegativeButton("OK", null);
+                alert.show();
+            }*/
+
+            if(validate && (userBean.getUserName().equals("")) || (userBean.getEmail().equals("")) || (userBean.getLogin().equals(""))){
+                validate = false;
+                alert.setTitle("Erro - Cadastro de Usuário").setMessage("Favor preencher todos os dados Pessoais");
+                alert.setNegativeButton("OK", null);
+                alert.show();
+            }
+
+            // só valido a senha se for cadastro novo
+            if(userBean.getId() != null && validate && (userBean.getPassword().equals("")) || (editTextConfirmPassword.getText().toString().equals(""))){
+                validate = false;
+                alert.setTitle("Erro - Cadastro de Usuário").setMessage("Favor preencher os campos da Senha");
+                alert.setNegativeButton("OK", null);
+                alert.show();
+            } else if(userBean.getId() != null && validate && !userBean.getPassword().equals(editTextConfirmPassword.getText().toString())){
+                validate = false;
+                alert.setTitle("Erro - Cadastro de Usuário").setMessage("As Senhas não coincidem");
+                alert.setNegativeButton("OK", null);
+                alert.show();
+            }
+
+            // ENDERECO
+            if(validate && (userBean.getZipCode().equals("") || userBean.getAddress().equals("") || userBean.getNumberAddress().equals("")
+                    || userBean.getNeighborhood().equals("") || userBean.getCity().equals(""))){
+                validate = false;
+                alert.setTitle("Erro - Cadastro de Usuário").setMessage("Favor preencher todos os dados de Endereço");
+                alert.setNegativeButton("OK", null);
+                alert.show();
+            }
+
+            return validate;
         }
     }
 }

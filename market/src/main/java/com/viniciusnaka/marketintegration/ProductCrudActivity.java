@@ -1,6 +1,7 @@
 package com.viniciusnaka.marketintegration;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -79,8 +80,10 @@ public class ProductCrudActivity extends ActionBarActivity {
                 btnSave = (Button) rootView.findViewById(R.id.button1);
 
                 ProductDB productDB = new ProductDB(getActivity());
-                ArrayAdapter arrayAdapterCategories = new ArrayAdapter<CategoryBean>(getActivity(), R.layout.support_simple_spinner_dropdown_item, productDB.getCategories());
+                List<CategoryBean> categories = productDB.getCategories();
+                ArrayAdapter arrayAdapterCategories = new ArrayAdapter<CategoryBean>(getActivity(), R.layout.support_simple_spinner_dropdown_item, categories);
                 spinnerCategories.setAdapter(arrayAdapterCategories);
+                spinnerCategories.setPromptId(R.string.spinner_categories);
                 spinnerCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
 
                     @Override
@@ -102,6 +105,7 @@ public class ProductCrudActivity extends ActionBarActivity {
                     editPrice.setText(productBeanLoad.getPrice().toString());
                     editStock.setText(productBeanLoad.getStock().toString());
                     editImage.setText(productBeanLoad.getImg().toString());
+                    spinnerCategories.setSelection(categories.indexOf(productBeanLoad.getCategoryBean()));
                     btnSave.setTag(productBeanLoad);
                 }
 

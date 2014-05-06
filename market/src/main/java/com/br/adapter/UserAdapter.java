@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import com.br.bean.ProductBean;
 import com.br.bean.UserBean;
 import com.viniciusnaka.marketintegration.R;
 
@@ -21,12 +22,23 @@ public class UserAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
     private ImageButton imgEditUser, imgDeleteButton;
-    private TextView txtUserName, txtEmail, txtLogin, txtDateCreate;
+    private TextView txtEmail, txtLogin;
 
     public UserAdapter(Context context, List<UserBean> userBeanList){
         this.context = context;
         this.userBeanList = userBeanList;
         this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    private ChangeUser changeUser;
+    
+    public interface ChangeUser{
+        public void onDeleteUser(UserBean userBean);
+        public void onEditUser(UserBean userBean);
+    }
+
+    public void setChangeUser(ChangeUser changeUser) {
+        this.changeUser = changeUser;
     }
 
     @Override
@@ -47,25 +59,40 @@ public class UserAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        txtUserName = (TextView) convertView.findViewById(R.id.txtUserName);
+        if(convertView == null){
+            convertView = layoutInflater.inflate(R.layout.item_user, null);
+        }
+
         txtEmail = (TextView) convertView.findViewById(R.id.txtEmail);
         txtLogin = (TextView) convertView.findViewById(R.id.txtLogin);
-        txtDateCreate = (TextView) convertView.findViewById(R.id.txtDateCreate);
 
         imgEditUser = (ImageButton) convertView.findViewById(R.id.imgBtnEditUser);
         imgDeleteButton = (ImageButton) convertView.findViewById(R.id.imgBtnDeleteUser);
 
+        UserBean userBean = userBeanList.get(position);
+
+        txtEmail.setText(userBean.getEmail());
+        txtLogin.setText(userBean.getLogin());
+
+        imgEditUser.setTag(userBean);
         imgEditUser.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-
+            public void onClick(View view) {
+                if(changeUser != null){
+                    UserBean userBeanLoad = (UserBean) view.getTag();
+                    changeUser.onEditUser(userBeanLoad);
+                }
             }
         });
 
+        imgDeleteButton.setTag(userBean);
         imgDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-
+            public void onClick(View view) {
+                if(changeUser != null) {
+                    UserBean userBeanLoad = (UserBean) view.getTag();
+                    changeUser.onDeleteUser(userBeanLoad);
+                }
             }
         });
 

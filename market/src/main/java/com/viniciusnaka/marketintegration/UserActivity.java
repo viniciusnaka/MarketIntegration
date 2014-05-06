@@ -2,7 +2,6 @@ package com.viniciusnaka.marketintegration;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,20 +9,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 import com.br.adapter.UserAdapter;
-import com.br.bean.CartBean;
 import com.br.bean.UserBean;
-import com.br.dataBase.CartDB;
 import com.br.dataBase.UserDB;
 
 import java.util.List;
 
 
-public class UserListActivity extends ActionBarActivity {
+public class UserActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +59,11 @@ public class UserListActivity extends ActionBarActivity {
     public static class PlaceholderFragment extends Fragment implements View.OnClickListener {
 
         private List<UserBean> userBeanList;
-        private ListView listViewCarts;
+        private ListView listViewUsers;
         private UserDB userDB;
         private Button btnAddUser;
         private static final int PAGE_ADD = 1;
+        private static final int PAGE_EDIT = 2;
 
 
         public PlaceholderFragment() {
@@ -75,16 +72,41 @@ public class UserListActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_user_list, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_user, container, false);
 
             userDB = new UserDB(rootView.getContext());
             userBeanList = userDB.getUsers();
 
-            listViewCarts = (ListView) rootView.findViewById(R.id.listViewUsers);
+            listViewUsers = (ListView) rootView.findViewById(R.id.listViewUsers);
             btnAddUser = (Button) rootView.findViewById(R.id.btnAddUser);
 
             UserAdapter adapter = new UserAdapter(getActivity(), userBeanList);
-            listViewCarts.setAdapter(adapter);
+
+            adapter.setChangeUser(new UserAdapter.ChangeUser(){
+
+                @Override
+                public void onDeleteUser(UserBean userBeanLoad) {
+                    if(userDB.delete(userBeanLoad)){
+                        userBeanList.remove(userBeanLoad);
+                        UserAdapter adapter = (UserAdapter) listViewUsers.getAdapter();
+                        adapter.notifyDataSetChanged();
+                        Toast.makeText(getActivity(), "Usuário "+userBeanLoad.getUserName() + " deletado com sucesso!",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(), "Erro ao deletar o Usuário "+userBeanLoad.getUserName()+ ".",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onEditUser(UserBean userBean) {
+                    Intent it = new Intent(getActivity(), UserCrudActivity.class);
+                    it.putExtra("user", userBean);
+                    startActivityForResult(it, PAGE_EDIT);
+                }
+            });
+
+            listViewUsers.setAdapter(adapter);
 
             btnAddUser.setOnClickListener(this);
 
@@ -99,8 +121,18 @@ public class UserListActivity extends ActionBarActivity {
         }
 
         @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        public void onActivityResult(int requestCode, int resultCode, Intent it) {
+            Bundle param = it != null ? it.getExtras() : null;
+            if(param != null) {
+                UserBean userBean = (UserBean) param.get("user");
+                UserAdapter adapter = (UserAdapter) listViewUsers.getAdapter();
+                if (requestCode == PAGE_ADD) {
+                    userBeanList.add(userBean);
+                }
+                adapter.notifyDataSetChanged();
+                Toast.makeText(getActivity(), param.get("msg").toString(), Toast.LENGTH_SHORT)
+                        .show();
+            }
         }
     }
 }

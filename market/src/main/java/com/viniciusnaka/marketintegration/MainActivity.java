@@ -96,7 +96,7 @@ public class MainActivity extends ActionBarActivity {
             btnUserList.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   Intent it = new Intent(getActivity(), UserListActivity.class);
+                   Intent it = new Intent(getActivity(), UserActivity.class);
                     startActivity(it);
                 }
             });

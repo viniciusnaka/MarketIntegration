@@ -10,6 +10,8 @@ import com.br.bean.UserBean;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,25 +31,33 @@ public class UserDB {
         List<UserBean> userBeanList = new ArrayList<UserBean>();
 
         // faco a consulta no banco usando um comando SQL puro
-        Cursor cursor = sqlLiteDatabase.rawQuery("SELECT id, name, login, password, email, address, number, complement, zipcode, neighborhood, city, state FROM user", null);
+        Cursor cursor = sqlLiteDatabase.rawQuery("SELECT id, name, login, password, email, address, number, complement, zipcode, neighborhood, city, state, date_create FROM user", null);
         // percorro cada linha da consulta e armazeno na lista
         while(cursor.moveToNext()){
-            UserBean userBean = new UserBean();
-            userBean.setId(cursor.getInt(0));
-            userBean.setUserName(cursor.getString(1));
-            userBean.setLogin(cursor.getString(2));
-            userBean.setPassword(cursor.getString(3));
-            userBean.setEmail(cursor.getString(4));
-            userBean.setAddress(cursor.getString(5));
-            userBean.setNumberAddress(cursor.getString(6));
-            userBean.setComplement(cursor.getString(7));
-            userBean.setZipCode(cursor.getString(8));
-            userBean.setNeighborhood(cursor.getString(9));
-            userBean.setCity(cursor.getString(10));
-            userBean.setState(cursor.getString(11));
-            //userBean.setDateCreate(cursor.getString(2));
+            try {
+                UserBean userBean = new UserBean();
+                userBean.setId(cursor.getInt(0));
+                userBean.setUserName(cursor.getString(1));
+                userBean.setLogin(cursor.getString(2));
+                userBean.setPassword(cursor.getString(3));
+                userBean.setEmail(cursor.getString(4));
+                userBean.setAddress(cursor.getString(5));
+                userBean.setNumberAddress(cursor.getString(6));
+                userBean.setComplement(cursor.getString(7));
+                userBean.setZipCode(cursor.getString(8));
+                userBean.setNeighborhood(cursor.getString(9));
+                userBean.setCity(cursor.getString(10));
+                userBean.setState(cursor.getString(11));
 
-            userBeanList.add(userBean);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                userBean.setDateCreate(dateFormat.parse(cursor.getString(12)));
+
+                userBeanList.add(userBean);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
         }
         cursor.close();
 
@@ -108,4 +118,25 @@ public class UserDB {
         return userBean;
     }
 
+    public boolean delete(UserBean userBeanLoad) {
+        boolean success = false;
+        
+        sqlLiteDatabase.beginTransaction();
+        
+        try {
+
+            long result = sqlLiteDatabase.delete("user", "id = " + userBeanLoad.getId(), null);
+            if(result != -1){
+                sqlLiteDatabase.setTransactionSuccessful();
+                success = true;
+            }
+
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            sqlLiteDatabase.endTransaction();
+        }
+
+        return success;
+    }
 }
