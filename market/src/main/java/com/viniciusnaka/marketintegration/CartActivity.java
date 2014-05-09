@@ -22,7 +22,7 @@ import com.br.bean.CartBean;
 import com.br.bean.ProductBean;
 import com.br.dataBase.CartDB;
 import com.br.dataBase.ProductDB;
-import com.br.generate.GenerateUtil;
+import com.br.helper.AppHelper;
 
 
 public class CartActivity extends ActionBarActivity {
@@ -84,7 +84,7 @@ public class CartActivity extends ActionBarActivity {
             btnBuy = (Button) rootView.findViewById(R.id.btnBuy);
 
             // pego os dados que aparecerao na tela
-            listProducts = GenerateUtil.cart;
+            listProducts = AppHelper.cart;
 
             // monto o adapter com o contexto da tela
             CartAdapter adapter = new CartAdapter(getActivity());
@@ -94,11 +94,11 @@ public class CartActivity extends ActionBarActivity {
 				@Override
 				public boolean quantityUp(int position) {
                     boolean quantityOK = true;
-					ProductBean productBeanLoad = GenerateUtil.cart.get(position);
+					ProductBean productBeanLoad = AppHelper.cart.get(position);
                     if(productBeanLoad.getQuantity() < productBeanLoad.getStock()){
                         productBeanLoad.setQuantity(productBeanLoad.getQuantity()+1);
-                        txtQtdeItens.setText("Qtde Itens("+ GenerateUtil.getQtdeItens() +")");
-                        txtValue.setText(GenerateUtil.getValueCart().toString());
+                        txtQtdeItens.setText("Qtde Itens("+ AppHelper.getQtdeItens() +")");
+                        txtValue.setText(AppHelper.getValueCart().toString());
                     } else {
                         quantityOK = false;
                     }
@@ -108,11 +108,11 @@ public class CartActivity extends ActionBarActivity {
 				@Override
 				public boolean quantityDown(int position) {
                     boolean quantityOK = true;
-                    ProductBean productBeanLoad = GenerateUtil.cart.get(position);
+                    ProductBean productBeanLoad = AppHelper.cart.get(position);
 					if(productBeanLoad.getQuantity() > 1){
 			            productBeanLoad.setQuantity(productBeanLoad.getQuantity()-1);
-			            txtQtdeItens.setText("Qtde Itens("+ GenerateUtil.getQtdeItens() +")");
-			            txtValue.setText(GenerateUtil.getValueCart().toString());
+			            txtQtdeItens.setText("Qtde Itens("+ AppHelper.getQtdeItens() +")");
+			            txtValue.setText(AppHelper.getValueCart().toString());
 			        } else {
                         quantityOK = false;
 			        }										
@@ -121,17 +121,17 @@ public class CartActivity extends ActionBarActivity {
 				
 				@Override
 				public void onRemoveItem(ProductBean productBean) {
-					GenerateUtil.cart.remove(productBean);
-					txtQtdeItens.setText("Qtde Itens("+ GenerateUtil.getQtdeItens() +")");
-                    txtValue.setText(GenerateUtil.getValueCart().toString());
+					AppHelper.cart.remove(productBean);
+					txtQtdeItens.setText("Qtde Itens("+ AppHelper.getQtdeItens() +")");
+                    txtValue.setText(AppHelper.getValueCart().toString());
 			        Toast.makeText(getActivity(), "Produto " + productBean.getName() + " removido do Carrinho", Toast.LENGTH_SHORT).show();
-					//return GenerateUtil.getValueCart();
+					//return AppHelper.getValueCart();
 				}
 			});
             
-            txtQtdeItens.setText("Qtde Itens("+ GenerateUtil.getQtdeItens() +")");
+            txtQtdeItens.setText("Qtde Itens("+ AppHelper.getQtdeItens() +")");
             txtCurrency.setText("R$: ");
-            txtValue.setText(GenerateUtil.getValueCart().toString());
+            txtValue.setText(AppHelper.getValueCart().toString());
 
             btnBuy.setOnClickListener(this);
 

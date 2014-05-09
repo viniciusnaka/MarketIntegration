@@ -7,7 +7,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.br.bean.ProductBean;
-import com.br.generate.GenerateUtil;
+import com.br.helper.AppHelper;
 import com.viniciusnaka.marketintegration.R;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class CartAdapter extends BaseAdapter implements OnClickListener {
 
-    private List<ProductBean> listProducts = GenerateUtil.cart;
+    private List<ProductBean> listProducts = AppHelper.cart;
     private Context context;
     private LayoutInflater inflater;
     private TextView txtNome, txtQtde, txtPreco;

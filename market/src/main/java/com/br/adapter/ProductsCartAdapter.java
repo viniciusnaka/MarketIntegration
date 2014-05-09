@@ -1,14 +1,12 @@
 package com.br.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.br.bean.ProductBean;
-import com.br.generate.GenerateUtil;
-import com.viniciusnaka.marketintegration.ProductCrudActivity;
+import com.br.helper.AppHelper;
 import com.viniciusnaka.marketintegration.R;
 
 import java.util.List;
@@ -84,7 +82,7 @@ public class ProductsCartAdapter extends BaseAdapter {
     }
 
     public void cartAdd(View view, ProductBean productBeanLoad){
-        GenerateUtil.cart.add(productBeanLoad);
+        AppHelper.cart.add(productBeanLoad);
         Toast.makeText(context, "Adicionado " + productBeanLoad.getName() + " ao Carrinho", Toast.LENGTH_SHORT).show();
     }
 

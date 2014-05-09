@@ -79,7 +79,7 @@ public class ProductsCartActivity extends ActionBarActivity {
             productDB = new ProductDB(rootView.getContext());
             productBeanList = productDB.getProducts();
 
-            //productBeanList = GenerateUtil.generateproductList();
+            //productBeanList = AppHelper.generateproductList();
 
             btnCart = (Button) rootView.findViewById(R.id.btnCart);
             btnCart.setOnClickListener(new View.OnClickListener() {

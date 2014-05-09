@@ -81,6 +81,7 @@ public class ProductCrudActivity extends ActionBarActivity {
 
                 ProductDB productDB = new ProductDB(getActivity());
                 List<CategoryBean> categories = productDB.getCategories();
+                categories.add(0, new CategoryBean(0, "Categoria"));
                 ArrayAdapter arrayAdapterCategories = new ArrayAdapter<CategoryBean>(getActivity(), R.layout.support_simple_spinner_dropdown_item, categories);
                 spinnerCategories.setAdapter(arrayAdapterCategories);
                 spinnerCategories.setPromptId(R.string.spinner_categories);

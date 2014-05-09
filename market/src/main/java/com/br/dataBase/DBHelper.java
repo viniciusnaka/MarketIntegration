@@ -19,7 +19,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		// nesse momento devo rodar comandos que criem as tabelas e linhas necessarias para o app funcionar
 
         // criando a tabela user
-        db.execSQL("CREATE  TABLE user(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, name VARCHAR NOT NULL, login VARCHAR NOT NULL, password VARCHAR NOT NULL, email VARCHAR NOT NULL, address VARCHAR NOT NULL, number VARCHAR NOT NULL, complement VARCHAR NULL, zipcode VARCHAR NOT NULL, neighborhood VARCHAR NOT NULL, city VARCHAR NOT NULL, state VARCHAR NOT NULL, date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP)");
+        db.execSQL("CREATE  TABLE user(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, name VARCHAR NOT NULL, login VARCHAR NOT NULL, password VARCHAR NOT NULL, email VARCHAR NOT NULL, address VARCHAR NOT NULL, number VARCHAR NOT NULL, complement VARCHAR NULL, zipcode VARCHAR NOT NULL, neighborhood VARCHAR NOT NULL, city VARCHAR NOT NULL, state VARCHAR NOT NULL, latitude VARCHAR NULL, longitude VARCHAR NULL, date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP)");
         // criando a tabela product
         db.execSQL("CREATE TABLE product(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, name VARCHAR NOT NULL, price NUMERIC NOT NULL, id_category INTEGER NOT NULL, img VARCHAR NOT NULL, quantity INTEGER NULL, stock INTEGER NOT NULL)");
         // criando a tabela sub_category

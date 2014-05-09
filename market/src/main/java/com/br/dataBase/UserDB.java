@@ -31,7 +31,7 @@ public class UserDB {
         List<UserBean> userBeanList = new ArrayList<UserBean>();
 
         // faco a consulta no banco usando um comando SQL puro
-        Cursor cursor = sqlLiteDatabase.rawQuery("SELECT id, name, login, password, email, address, number, complement, zipcode, neighborhood, city, state, date_create FROM user", null);
+        Cursor cursor = sqlLiteDatabase.rawQuery("SELECT id, name, login, password, email, address, number, complement, zipcode, neighborhood, city, state, latitude, longitude, date_create FROM user", null);
         // percorro cada linha da consulta e armazeno na lista
         while(cursor.moveToNext()){
             try {
@@ -48,9 +48,11 @@ public class UserDB {
                 userBean.setNeighborhood(cursor.getString(9));
                 userBean.setCity(cursor.getString(10));
                 userBean.setState(cursor.getString(11));
+                userBean.setLatitude(cursor.getString(12));
+                userBean.setLongitude(cursor.getString(13));
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                userBean.setDateCreate(dateFormat.parse(cursor.getString(12)));
+                userBean.setDateCreate(dateFormat.parse(cursor.getString(14)));
 
                 userBeanList.add(userBean);
             } catch (ParseException e) {
@@ -90,6 +92,8 @@ public class UserDB {
             fields.put("neighborhood", userBean.getNeighborhood());
             fields.put("city", userBean.getCity());
             fields.put("state", userBean.getState());
+            fields.put("latitude", userBean.getState());
+            fields.put("longitude", userBean.getState());
             //fields.put("date_create", new Date());
 
             long result;

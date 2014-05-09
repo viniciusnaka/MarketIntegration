@@ -5,22 +5,25 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.*;
-import android.os.Build;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.*;
 import com.br.bean.UserBean;
 import com.br.dataBase.UserDB;
+import com.br.helper.AppHelper;
 import com.br.rest.Http;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class UserCrudActivity extends ActionBarActivity {
@@ -63,12 +66,15 @@ public class UserCrudActivity extends ActionBarActivity {
     public static class PlaceholderFragment extends Fragment {
 
         private static final String PAGE_CORREIOS = "http://correiosapi.apphb.com/cep/";
+        private static final String PAGE_MAPS = "http://maps.googleapis.com/maps/api/geocode/json?address=";
+        private TextView txtLatitude, txtLongitude;
         private EditText editTextUserName, editTextEmail, editTextLogin, editTextPassword, editTextConfirmPassword,
             editTextAddress, editTextNumberAddress, editTextComplement, editTextZipCode, editTextNeighborhood,
             editTextCity;
         private Spinner spinnerStates;
         private Button btnSearchZipCode, btnSaveUser;
         private ProgressDialog progressDialog;
+        private static List<String> states = AppHelper.getStates();
 
         public PlaceholderFragment() {
         }
@@ -89,9 +95,31 @@ public class UserCrudActivity extends ActionBarActivity {
             editTextComplement = (EditText) rootView.findViewById(R.id.editTextComplement);
             editTextNeighborhood = (EditText) rootView.findViewById(R.id.editTextNeighborhood);
             editTextCity = (EditText) rootView.findViewById(R.id.editTextCity);
+            txtLatitude = (TextView) rootView.findViewById(R.id.txtLatitude);
+            txtLongitude = (TextView) rootView.findViewById(R.id.txtLongitude);
             spinnerStates = (Spinner) rootView.findViewById(R.id.spinnerStates);
             btnSearchZipCode = (Button) rootView.findViewById(R.id.btnSearchZipCode);
             btnSaveUser = (Button) rootView.findViewById(R.id.btnSaveUser);
+
+            ArrayAdapter arrayAdapterStates = new ArrayAdapter(getActivity(), R.layout.support_simple_spinner_dropdown_item, states);
+            spinnerStates.setPrompt("Estados");
+            spinnerStates.setAdapter(arrayAdapterStates);
+            spinnerStates.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (position > 0) {
+                        String state = (String) spinnerStates.getItemAtPosition(position);
+                        spinnerStates.setSelection(states.indexOf(state));
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    Toast.makeText(getActivity(), "É necessário selecionar uma Categoria", Toast.LENGTH_SHORT).show();
+                }
+
+            });
 
             if(getActivity().getIntent().getSerializableExtra("user") != null){
                 UserBean userBeanLoad = (UserBean) getActivity().getIntent().getSerializableExtra("user");
@@ -106,6 +134,7 @@ public class UserCrudActivity extends ActionBarActivity {
                 editTextComplement.setText(userBeanLoad.getComplement());
                 editTextNeighborhood.setText(userBeanLoad.getNeighborhood());
                 editTextCity.setText(userBeanLoad.getCity());
+                spinnerStates.setSelection(states.indexOf(userBeanLoad.getState()));
                 getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                 btnSaveUser.setTag(userBeanLoad);
             }
@@ -113,6 +142,7 @@ public class UserCrudActivity extends ActionBarActivity {
             btnSaveUser.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    progressDialog = ProgressDialog.show(getActivity(), "Processando", "Salvando usuário...");
                     boolean create = true;
                     UserBean userBean;
 
@@ -134,11 +164,80 @@ public class UserCrudActivity extends ActionBarActivity {
                     userBean.setNeighborhood(editTextNeighborhood.getText().toString());
                     userBean.setCity(editTextCity.getText().toString());
 
-                    userBean.setState("SP"); // teste
+                    userBean.setState(spinnerStates.getSelectedItem().toString());
 
                     UserDB userDB = new UserDB(getActivity());
 
+                    AsyncTask<Void, Void, JSONObject> task = new AsyncTask<Void, Void, JSONObject>() {
+
+                        @Override
+                        protected JSONObject doInBackground(Void... voids) {
+                            Http http = new Http();
+                            try {
+                                StringBuilder strAddress = new StringBuilder();
+                                strAddress.append(editTextAddress.getText().toString()).append(" ");
+                                strAddress.append(editTextNumberAddress.getText().toString()).append(" ");
+                                strAddress.append(editTextCity.getText().toString()).append(" ");
+                                strAddress.append(spinnerStates.getSelectedItem().toString());
+
+                                String result = http.doGet(PAGE_MAPS + URLEncoder.encode(strAddress.toString(), "UTF-8") + "&sensor=true");
+
+                                JSONObject jsonObject = new JSONObject(result);
+                                boolean addressOk = false;
+                                if(jsonObject.getString("status").equals("OK")){
+                                    JSONArray jsonArrayResults = jsonObject.getJSONArray("results");
+                                    JSONObject jsonObjectLocation = new JSONObject();
+                                    for(int i=0; i< jsonArrayResults.length(); i++){
+                                        JSONObject jsonObjectResults = jsonArrayResults.getJSONObject(i);
+                                        JSONArray jsonArrayAddressComponents = jsonObjectResults.getJSONArray("address_components");
+                                        for(int j=0; j < jsonArrayAddressComponents.length(); j++){
+                                            JSONObject jsonObjectAddressComponents = jsonArrayAddressComponents.getJSONObject(j);
+                                            if(jsonObjectAddressComponents.getString("long_name").replace("-","").equals(editTextZipCode.getText().toString())){
+                                                addressOk = true;
+                                                break;
+                                            }
+                                        }
+                                        if(addressOk){
+                                            JSONObject jsonObjectGeometry = jsonObjectResults.getJSONObject("geometry");
+                                            jsonObjectLocation = jsonObjectGeometry.getJSONObject("location");
+                                            return jsonObjectLocation;
+                                        }
+
+                                    }
+                                }
+
+                            } catch (IOException e1) {
+                                Log.e(AppHelper.getClassError(UserCrudActivity.class), e1.getMessage());
+                            } catch (JSONException e2) {
+                                Log.e(AppHelper.getClassError(UserCrudActivity.class), e2.getMessage());
+                            }
+
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(JSONObject jsonObject) {
+                            super.onPostExecute(jsonObject);
+
+                            if(jsonObject == null){
+                                Toast.makeText(getActivity(), "CEP inexistente.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                try {
+                                    txtLatitude.setText(jsonObject.get("lat").toString());
+                                    txtLongitude.setText(jsonObject.get("lng").toString());
+                                } catch (JSONException e3) {
+                                    Log.e(AppHelper.getClassError(UserCrudActivity.class), e3.getMessage());
+                                }
+                            }
+                        }
+                    };
+
                     if(validateFields(userBean)){
+                        task.execute();
+
+                        userBean.setLatitude(txtLatitude.getText().toString());
+                        userBean.setLongitude(txtLongitude.getText().toString());
+
                         userBean = userDB.salvar(userBean);
                         if(userBean != null){
                             Intent it = new Intent();
@@ -153,7 +252,7 @@ public class UserCrudActivity extends ActionBarActivity {
                             getActivity().finish();
                         }
                     }
-
+                    progressDialog.dismiss();
                 }
             });
 
@@ -174,9 +273,9 @@ public class UserCrudActivity extends ActionBarActivity {
                                 }
 
                             } catch (IOException e1) {
-                                e1.printStackTrace();
+                                Log.e(AppHelper.getClassError(UserCrudActivity.class), e1.getMessage());
                             } catch (JSONException e2) {
-                                e2.printStackTrace();
+                                Log.e(AppHelper.getClassError(UserCrudActivity.class), e2.getMessage());
                             }
 
                             return null;
@@ -191,8 +290,9 @@ public class UserCrudActivity extends ActionBarActivity {
                                     editTextAddress.setText(jsonObject.get("tipoDeLogradouro") + " " + jsonObject.get("logradouro"));
                                     editTextNeighborhood.setText(jsonObject.get("bairro").toString());
                                     editTextCity.setText(jsonObject.get("cidade").toString());
+                                    spinnerStates.setSelection(states.indexOf(jsonObject.get("estado").toString()));
                                 } catch (JSONException e3) {
-                                    e3.printStackTrace();
+                                    Log.e(AppHelper.getClassError(UserCrudActivity.class), e3.getMessage());
                                 }
 
                             }
@@ -210,7 +310,7 @@ public class UserCrudActivity extends ActionBarActivity {
         private boolean validateFields(UserBean userBean){
             boolean validate = true;
             AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-
+            alert.setNegativeButton("OK", null);
             // DADOS PESSOAIS
             /*if(userBean == null){
                 validate = false;
@@ -221,21 +321,21 @@ public class UserCrudActivity extends ActionBarActivity {
 
             if(validate && (userBean.getUserName().equals("")) || (userBean.getEmail().equals("")) || (userBean.getLogin().equals(""))){
                 validate = false;
+                Log.e(AppHelper.getClassError(UserCrudActivity.class), "Favor preencher todos os dados Pessoais");
                 alert.setTitle("Erro - Cadastro de Usuário").setMessage("Favor preencher todos os dados Pessoais");
-                alert.setNegativeButton("OK", null);
                 alert.show();
             }
 
             // só valido a senha se for cadastro novo
-            if(userBean.getId() != null && validate && (userBean.getPassword().equals("")) || (editTextConfirmPassword.getText().toString().equals(""))){
+            if(userBean.getId() != null && validate && (userBean.getPassword().equals("") || editTextConfirmPassword.getText().toString().equals(""))){
                 validate = false;
+                Log.e(AppHelper.getClassError(UserCrudActivity.class), "Favor preencher os campos da Senha");
                 alert.setTitle("Erro - Cadastro de Usuário").setMessage("Favor preencher os campos da Senha");
-                alert.setNegativeButton("OK", null);
                 alert.show();
             } else if(userBean.getId() != null && validate && !userBean.getPassword().equals(editTextConfirmPassword.getText().toString())){
                 validate = false;
+                Log.e(AppHelper.getClassError(UserCrudActivity.class), "As Senhas não coincidem");
                 alert.setTitle("Erro - Cadastro de Usuário").setMessage("As Senhas não coincidem");
-                alert.setNegativeButton("OK", null);
                 alert.show();
             }
 
@@ -243,8 +343,8 @@ public class UserCrudActivity extends ActionBarActivity {
             if(validate && (userBean.getZipCode().equals("") || userBean.getAddress().equals("") || userBean.getNumberAddress().equals("")
                     || userBean.getNeighborhood().equals("") || userBean.getCity().equals(""))){
                 validate = false;
+                Log.e(AppHelper.getClassError(UserCrudActivity.class), "Favor preencher todos os dados de Endereço");
                 alert.setTitle("Erro - Cadastro de Usuário").setMessage("Favor preencher todos os dados de Endereço");
-                alert.setNegativeButton("OK", null);
                 alert.show();
             }
 
