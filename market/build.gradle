@@ -9,12 +9,12 @@ buildscript {
 apply plugin: 'android'
 
 repositories {
-        mavenCentral()
+    mavenCentral()
 }
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+    buildToolsVersion '19.0.3'
 
     defaultConfig {
         minSdkVersion 8

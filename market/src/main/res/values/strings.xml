@@ -13,5 +13,6 @@
     <string name="spinner_categories">Selecione uma Categoria</string>
     <string name="title_activity_user_list">UserListActivity</string>
     <string name="title_activity_user_crud">UserCrudActivity</string>
+    <string name="title_activity_user_maps">UserMapsActivity</string>
 
 </resources>

@@ -75,6 +75,7 @@ public class UserCrudActivity extends ActionBarActivity {
         private Button btnSearchZipCode, btnSaveUser;
         private ProgressDialog progressDialog;
         private static List<String> states = AppHelper.getStates();
+        private UserBean userBean = new UserBean();
 
         public PlaceholderFragment() {
         }
@@ -143,11 +144,8 @@ public class UserCrudActivity extends ActionBarActivity {
                 @Override
                 public void onClick(View view) {
                     progressDialog = ProgressDialog.show(getActivity(), "Processando", "Salvando usuário...");
-                    boolean create = true;
-                    UserBean userBean;
 
                     if(view.getTag() != null){
-                        create = false;
                         userBean = (UserBean) view.getTag();
                     } else {
                         userBean = new UserBean();
@@ -165,8 +163,6 @@ public class UserCrudActivity extends ActionBarActivity {
                     userBean.setCity(editTextCity.getText().toString());
 
                     userBean.setState(spinnerStates.getSelectedItem().toString());
-
-                    UserDB userDB = new UserDB(getActivity());
 
                     AsyncTask<Void, Void, JSONObject> task = new AsyncTask<Void, Void, JSONObject>() {
 
@@ -223,8 +219,28 @@ public class UserCrudActivity extends ActionBarActivity {
                                 Toast.makeText(getActivity(), "CEP inexistente.", Toast.LENGTH_SHORT).show();
                             } else {
                                 try {
-                                    txtLatitude.setText(jsonObject.get("lat").toString());
-                                    txtLongitude.setText(jsonObject.get("lng").toString());
+                                    userBean.setLatitude(jsonObject.get("lat").toString());
+                                    userBean.setLongitude(jsonObject.get("lng").toString());
+
+                                    boolean create = userBean.getId() == null ? true : false;
+
+                                    UserDB userDB = new UserDB(getActivity());
+                                    userBean = userDB.salvar(userBean);
+
+                                    if(userBean != null){
+                                        Intent it = new Intent();
+                                        it.putExtra("msg", create ? "Usuário salvo com sucesso!" : "Usuário atualizado com sucesso!");
+                                        it.putExtra("user", userBean);
+                                        getActivity().setResult(RESULT_OK, it);
+                                        getActivity().finish();
+                                    } else {
+                                        Intent it = new Intent();
+                                        it.putExtra("msg", create ? "Falha ao cadastrar o Usuário!" : "Falha ao atualizar Usuário!");
+                                        getActivity().setResult(RESULT_CANCELED, it);
+                                        getActivity().finish();
+                                    }
+
+                                    progressDialog.dismiss();
                                 } catch (JSONException e3) {
                                     Log.e(AppHelper.getClassError(UserCrudActivity.class), e3.getMessage());
                                 }
@@ -234,25 +250,7 @@ public class UserCrudActivity extends ActionBarActivity {
 
                     if(validateFields(userBean)){
                         task.execute();
-
-                        userBean.setLatitude(txtLatitude.getText().toString());
-                        userBean.setLongitude(txtLongitude.getText().toString());
-
-                        userBean = userDB.salvar(userBean);
-                        if(userBean != null){
-                            Intent it = new Intent();
-                            it.putExtra("msg", create ? "Usuário salvo com sucesso!" : "Usuário atualizado com sucesso!");
-                            it.putExtra("user", userBean);
-                            getActivity().setResult(RESULT_OK, it);
-                            getActivity().finish();
-                        } else {
-                            Intent it = new Intent();
-                            it.putExtra("msg", create ? "Falha ao cadastrar o Usuário!" : "Falha ao atualizar Usuário!");
-                            getActivity().setResult(RESULT_CANCELED, it);
-                            getActivity().finish();
-                        }
                     }
-                    progressDialog.dismiss();
                 }
             });
 
