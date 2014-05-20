@@ -1,4 +1,4 @@
-package com.br.bean;
+package com.bean;
 
 import java.io.Serializable;
 import java.util.List;

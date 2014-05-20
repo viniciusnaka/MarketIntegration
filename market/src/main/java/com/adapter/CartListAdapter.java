@@ -1,11 +1,11 @@
-package com.br.adapter;
+package com.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import com.br.bean.CartBean;
+import com.bean.CartBean;
 import com.viniciusnaka.marketintegration.R;
 
 import java.util.Date;

@@ -17,12 +17,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.br.adapter.CartAdapter;
-import com.br.bean.CartBean;
-import com.br.bean.ProductBean;
-import com.br.dataBase.CartDB;
-import com.br.dataBase.ProductDB;
-import com.br.helper.AppHelper;
+import com.adapter.CartAdapter;
+import com.bean.CartBean;
+import com.bean.ProductBean;
+import com.dataBase.CartDB;
+import com.dataBase.ProductDB;
+import com.helper.AppHelper;
 
 
 public class CartActivity extends ActionBarActivity {

@@ -1,7 +1,6 @@
 package com.viniciusnaka.marketintegration;
 
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,13 +8,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.br.adapter.CartAdapter;
-import com.br.adapter.CartListAdapter;
-import com.br.bean.CartBean;
-import com.br.dataBase.CartDB;
+import com.adapter.CartListAdapter;
+import com.bean.CartBean;
+import com.dataBase.CartDB;
 
 import java.math.BigDecimal;
 import java.util.List;

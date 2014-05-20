@@ -15,9 +15,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.*;
 
-import com.br.bean.CategoryBean;
-import com.br.bean.ProductBean;
-import com.br.dataBase.ProductDB;
+import com.bean.CategoryBean;
+import com.bean.ProductBean;
+import com.dataBase.ProductDB;
 
 public class ProductCrudActivity extends ActionBarActivity {
 

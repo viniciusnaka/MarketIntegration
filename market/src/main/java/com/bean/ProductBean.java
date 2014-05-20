@@ -1,9 +1,8 @@
-package com.br.bean;
+package com.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 
 /**
  * Created by vinicius on 4/12/14.

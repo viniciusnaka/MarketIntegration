@@ -1,4 +1,4 @@
-package com.br.bean;
+package com.bean;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -24,6 +24,21 @@ public class UserBean implements Serializable {
     private Date dateCreate;
     private String latitude;
     private String longitude;
+    private String gender;
+
+    public enum Gender{
+        MALE("M"), FEMALE("F");
+
+        private String sex;
+
+        private Gender(String gender){
+            sex = gender;
+        }
+
+        public String getSex() {
+            return sex;
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -174,5 +189,13 @@ public class UserBean implements Serializable {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }

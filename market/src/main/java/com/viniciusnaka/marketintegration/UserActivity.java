@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
-import com.br.adapter.UserAdapter;
-import com.br.bean.UserBean;
-import com.br.dataBase.UserDB;
+import com.adapter.UserAdapter;
+import com.bean.UserBean;
+import com.dataBase.UserDB;
 
 import java.util.List;
 
@@ -128,6 +128,12 @@ public class UserActivity extends ActionBarActivity {
                 UserAdapter adapter = (UserAdapter) listViewUsers.getAdapter();
                 if (requestCode == PAGE_ADD) {
                     userBeanList.add(userBean);
+                } else {
+                    int indexUserBean = userBeanList.indexOf(userBean);
+                    // removendo o objeto antigo
+                    userBeanList.remove(indexUserBean);
+                    // adicionando o novo objeto(antigo alterado)
+                    userBeanList.add(indexUserBean, userBean);
                 }
                 adapter.notifyDataSetChanged();
                 Toast.makeText(getActivity(), param.get("msg").toString(), Toast.LENGTH_SHORT)

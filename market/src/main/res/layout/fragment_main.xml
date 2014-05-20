@@ -34,6 +34,13 @@
             android:text="Users List"
             android:id="@+id/btnUserList" android:layout_below="@+id/btnShopping" android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Users Map"
+            android:id="@+id/btnUsersMap"
+            android:layout_below="@+id/btnUserList" android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
 
 
 </RelativeLayout>

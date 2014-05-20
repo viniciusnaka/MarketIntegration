@@ -32,6 +32,38 @@
                 android:id="@+id/editTextEmail"
                 android:hint="E-mail"/>
 
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:weightSum="1">
+
+            <RadioGroup
+                    android:orientation="horizontal"
+                    android:id="@+id/radioGender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Feminino"
+                        android:id="@+id/radioFemale"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentStart="true"/>
+
+                <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Masculino"
+                        android:id="@+id/radioMale"
+                        android:layout_alignParentTop="true"
+                        android:layout_toRightOf="@+id/radioFemale"/>
+
+            </RadioGroup>
+
+        </LinearLayout>
+
         <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

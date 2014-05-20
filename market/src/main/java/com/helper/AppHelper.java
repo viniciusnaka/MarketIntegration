@@ -1,6 +1,6 @@
-package com.br.helper;
+package com.helper;
 
-import com.br.bean.ProductBean;
+import com.bean.ProductBean;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

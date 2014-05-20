@@ -1,19 +1,14 @@
-package com.br.dataBase;
+package com.dataBase;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import com.br.bean.CategoryBean;
-import com.br.bean.ProductBean;
-import com.br.bean.UserBean;
+import com.bean.UserBean;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,7 +26,7 @@ public class UserDB {
         List<UserBean> userBeanList = new ArrayList<UserBean>();
 
         // faco a consulta no banco usando um comando SQL puro
-        Cursor cursor = sqlLiteDatabase.rawQuery("SELECT id, name, login, password, email, address, number, complement, zipcode, neighborhood, city, state, latitude, longitude, date_create FROM user", null);
+        Cursor cursor = sqlLiteDatabase.rawQuery("SELECT id, name, login, password, email, gender, address, number, complement, zipcode, neighborhood, city, state, latitude, longitude, date_create FROM user", null);
         // percorro cada linha da consulta e armazeno na lista
         while(cursor.moveToNext()){
             try {
@@ -41,18 +36,19 @@ public class UserDB {
                 userBean.setLogin(cursor.getString(2));
                 userBean.setPassword(cursor.getString(3));
                 userBean.setEmail(cursor.getString(4));
-                userBean.setAddress(cursor.getString(5));
-                userBean.setNumberAddress(cursor.getString(6));
-                userBean.setComplement(cursor.getString(7));
-                userBean.setZipCode(cursor.getString(8));
-                userBean.setNeighborhood(cursor.getString(9));
-                userBean.setCity(cursor.getString(10));
-                userBean.setState(cursor.getString(11));
-                userBean.setLatitude(cursor.getString(12));
-                userBean.setLongitude(cursor.getString(13));
+                userBean.setGender(cursor.getString(5));
+                userBean.setAddress(cursor.getString(6));
+                userBean.setNumberAddress(cursor.getString(7));
+                userBean.setComplement(cursor.getString(8));
+                userBean.setZipCode(cursor.getString(9));
+                userBean.setNeighborhood(cursor.getString(10));
+                userBean.setCity(cursor.getString(11));
+                userBean.setState(cursor.getString(12));
+                userBean.setLatitude(cursor.getString(13));
+                userBean.setLongitude(cursor.getString(14));
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                userBean.setDateCreate(dateFormat.parse(cursor.getString(14)));
+                userBean.setDateCreate(dateFormat.parse(cursor.getString(15)));
 
                 userBeanList.add(userBean);
             } catch (ParseException e) {
@@ -85,6 +81,7 @@ public class UserDB {
             fields.put("login", userBean.getLogin());
             fields.put("password", userBean.getPassword());
             fields.put("email", userBean.getEmail());
+            fields.put("gender", userBean.getGender());
             fields.put("address", userBean.getAddress());
             fields.put("number", userBean.getNumberAddress());
             fields.put("complement", userBean.getComplement());
@@ -92,8 +89,8 @@ public class UserDB {
             fields.put("neighborhood", userBean.getNeighborhood());
             fields.put("city", userBean.getCity());
             fields.put("state", userBean.getState());
-            fields.put("latitude", userBean.getState());
-            fields.put("longitude", userBean.getState());
+            fields.put("latitude", userBean.getLatitude());
+            fields.put("longitude", userBean.getLongitude());
             //fields.put("date_create", new Date());
 
             long result;

@@ -1,4 +1,4 @@
-package com.br.adapter;
+package com.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,8 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import com.br.bean.ProductBean;
-import com.br.bean.UserBean;
+import com.bean.UserBean;
 import com.viniciusnaka.marketintegration.R;
 
 import java.util.List;

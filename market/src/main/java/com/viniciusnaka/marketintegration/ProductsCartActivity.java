@@ -2,7 +2,6 @@ package com.viniciusnaka.marketintegration;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,13 +9,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.Button;
 import android.widget.ListView;
-import com.br.adapter.ProductAdapter;
-import com.br.adapter.ProductsCartAdapter;
-import com.br.bean.ProductBean;
-import com.br.dataBase.ProductDB;
+import com.adapter.ProductsCartAdapter;
+import com.bean.ProductBean;
+import com.dataBase.ProductDB;
 
 import java.util.ArrayList;
 import java.util.List;

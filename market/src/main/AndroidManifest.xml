@@ -63,9 +63,8 @@
             android:name="com.viniciusnaka.marketintegration.UserMapsActivity"
             android:label="@string/title_activity_user_maps" >
         </activity>
-<!--
         <meta-data android:name="com.google.android.gms.version"
-                   android:value="@integer/google_play_services_version"/>-->
+                   android:value="@integer/google_play_services_version"/>
         <meta-data android:name="com.google.android.maps.v2.API_KEY"
                    android:value="AIzaSyAABKNHN001O-ewQDIlRYMRYep1d-pq0ow"/>
 

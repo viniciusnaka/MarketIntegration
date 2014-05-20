@@ -5,13 +5,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.*;
-import android.view.View.OnClickListener;
 import android.widget.*;
 
-import com.br.adapter.ProductAdapter;
-import com.br.bean.CategoryBean;
-import com.br.bean.ProductBean;
-import com.br.dataBase.ProductDB;
+import com.adapter.ProductAdapter;
+import com.bean.CategoryBean;
+import com.bean.ProductBean;
+import com.dataBase.ProductDB;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.br.dataBase;
+package com.dataBase;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -10,9 +10,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.br.bean.CategoryBean;
-import com.br.bean.ProductBean;
-import com.br.bean.UserBean;
+import com.bean.CategoryBean;
+import com.bean.ProductBean;
 
 public class ProductDB {
 

@@ -1,13 +1,12 @@
-package com.br.dataBase;
+package com.dataBase;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import com.br.bean.CartBean;
-import com.br.bean.CategoryBean;
-import com.br.bean.ProductBean;
-import com.br.bean.UserBean;
+import com.bean.CartBean;
+import com.bean.ProductBean;
+import com.bean.UserBean;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

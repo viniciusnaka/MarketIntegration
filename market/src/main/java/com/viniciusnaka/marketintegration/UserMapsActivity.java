@@ -6,7 +6,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,16 +14,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import com.google.android.gms.maps.CameraUpdateFactory;
+import com.bean.UserBean;
+import com.dataBase.UserDB;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
 
 
 public class UserMapsActivity extends ActionBarActivity {
@@ -71,6 +72,7 @@ public class UserMapsActivity extends ActionBarActivity {
 
         private GoogleMap map;
         private LocationManager locManager;
+        private List<UserBean> userBeanList;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -97,16 +99,34 @@ public class UserMapsActivity extends ActionBarActivity {
                 local = localNet;
             }
             //levo o usuario para o local encontrado
-            if(local!=null){
-                LatLng ponto = new LatLng(local.getLatitude(), local.getLongitude());
-                //levo o mapa para esse local(com zoom mais proximo)
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(ponto, 15));
+            if(local != null){
 
-                MarkerOptions alfinete = new MarkerOptions();
-                alfinete.title("PONTO INICIAL").snippet("Local").position(ponto);
-                alfinete.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher));
-                //adiciono um alfinete no mapa
-                map.addMarker(alfinete);
+                //levo o mapa para esse local(com zoom mais proximo)
+                //map.animateCamera(CameraUpdateFactory.newLatLngZoom(ponto, 15));
+
+                UserDB userDB = new UserDB(getActivity());
+                userBeanList = userDB.getUsers();
+
+                for(UserBean userBeanLoad : userBeanList){
+                    LatLng userLocation = new LatLng(Double.parseDouble(userBeanLoad.getLatitude()),
+                            Double.parseDouble(userBeanLoad.getLongitude()));
+                    MarkerOptions pin = new MarkerOptions();
+                    StringBuilder strAddress = new StringBuilder();
+                    strAddress.append(userBeanLoad.getAddress()).append(", " + userBeanLoad.getNumberAddress() + "\n");
+                    strAddress.append(userBeanLoad.getCity()).append(" - " + userBeanLoad.getState());
+                    strAddress.append(", " + userBeanLoad.getZipCode());
+                    pin.title(userBeanLoad.getUserName()).
+                            snippet(strAddress.toString()).
+                            position(userLocation);
+                    if(userBeanLoad.getGender().equals(UserBean.Gender.MALE.getSex())){
+                        pin.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_male));
+                    } else {
+                        pin.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_female));
+                    }
+                    //adiciono um alfinete no mapa
+                    map.addMarker(pin);
+                }
+
             }
             //trato o clique longo sobre o mapa
             map.setOnMapLongClickListener(this);

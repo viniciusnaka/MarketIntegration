@@ -10,20 +10,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
-import com.br.bean.UserBean;
-import com.br.dataBase.UserDB;
-import com.br.helper.AppHelper;
-import com.br.rest.Http;
+import com.bean.UserBean;
+import com.dataBase.UserDB;
+import com.helper.AppHelper;
+import com.rest.Http;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URL;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class UserCrudActivity extends ActionBarActivity {
@@ -71,6 +68,8 @@ public class UserCrudActivity extends ActionBarActivity {
         private EditText editTextUserName, editTextEmail, editTextLogin, editTextPassword, editTextConfirmPassword,
             editTextAddress, editTextNumberAddress, editTextComplement, editTextZipCode, editTextNeighborhood,
             editTextCity;
+        private RadioGroup radioGroupGender;
+        private RadioButton radioButtonGender;
         private Spinner spinnerStates;
         private Button btnSearchZipCode, btnSaveUser;
         private ProgressDialog progressDialog;
@@ -98,6 +97,7 @@ public class UserCrudActivity extends ActionBarActivity {
             editTextCity = (EditText) rootView.findViewById(R.id.editTextCity);
             txtLatitude = (TextView) rootView.findViewById(R.id.txtLatitude);
             txtLongitude = (TextView) rootView.findViewById(R.id.txtLongitude);
+            radioGroupGender = (RadioGroup) rootView.findViewById(R.id.radioGender);
             spinnerStates = (Spinner) rootView.findViewById(R.id.spinnerStates);
             btnSearchZipCode = (Button) rootView.findViewById(R.id.btnSearchZipCode);
             btnSaveUser = (Button) rootView.findViewById(R.id.btnSaveUser);
@@ -135,6 +135,14 @@ public class UserCrudActivity extends ActionBarActivity {
                 editTextComplement.setText(userBeanLoad.getComplement());
                 editTextNeighborhood.setText(userBeanLoad.getNeighborhood());
                 editTextCity.setText(userBeanLoad.getCity());
+                if(userBeanLoad.getGender().equals(UserBean.Gender.MALE.getSex())){
+                    radioButtonGender = (RadioButton) rootView.findViewById(R.id.radioMale);
+                    radioButtonGender.setChecked(true);
+                } else {
+                    radioButtonGender = (RadioButton) rootView.findViewById(R.id.radioFemale);
+                    radioButtonGender.setChecked(true);
+                }
+
                 spinnerStates.setSelection(states.indexOf(userBeanLoad.getState()));
                 getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                 btnSaveUser.setTag(userBeanLoad);
@@ -149,6 +157,16 @@ public class UserCrudActivity extends ActionBarActivity {
                         userBean = (UserBean) view.getTag();
                     } else {
                         userBean = new UserBean();
+                    }
+
+                    int selectedId = radioGroupGender.getCheckedRadioButtonId();
+                    switch (selectedId){
+                        case R.id.radioFemale:
+                            userBean.setGender(UserBean.Gender.FEMALE.getSex());
+                            break;
+                        case R.id.radioMale:
+                            userBean.setGender(UserBean.Gender.MALE.getSex());
+                            break;
                     }
 
                     userBean.setUserName(editTextUserName.getText().toString());
@@ -179,26 +197,15 @@ public class UserCrudActivity extends ActionBarActivity {
                                 String result = http.doGet(PAGE_MAPS + URLEncoder.encode(strAddress.toString(), "UTF-8") + "&sensor=true");
 
                                 JSONObject jsonObject = new JSONObject(result);
-                                boolean addressOk = false;
+
                                 if(jsonObject.getString("status").equals("OK")){
                                     JSONArray jsonArrayResults = jsonObject.getJSONArray("results");
-                                    JSONObject jsonObjectLocation = new JSONObject();
                                     for(int i=0; i< jsonArrayResults.length(); i++){
                                         JSONObject jsonObjectResults = jsonArrayResults.getJSONObject(i);
-                                        JSONArray jsonArrayAddressComponents = jsonObjectResults.getJSONArray("address_components");
-                                        for(int j=0; j < jsonArrayAddressComponents.length(); j++){
-                                            JSONObject jsonObjectAddressComponents = jsonArrayAddressComponents.getJSONObject(j);
-                                            if(jsonObjectAddressComponents.getString("long_name").replace("-","").equals(editTextZipCode.getText().toString())){
-                                                addressOk = true;
-                                                break;
-                                            }
-                                        }
-                                        if(addressOk){
+                                        if(jsonObjectResults.get("geometry") != null){
                                             JSONObject jsonObjectGeometry = jsonObjectResults.getJSONObject("geometry");
-                                            jsonObjectLocation = jsonObjectGeometry.getJSONObject("location");
-                                            return jsonObjectLocation;
+                                            return (JSONObject) jsonObjectGeometry.get("location");
                                         }
-
                                     }
                                 }
 
@@ -215,7 +222,9 @@ public class UserCrudActivity extends ActionBarActivity {
                         protected void onPostExecute(JSONObject jsonObject) {
                             super.onPostExecute(jsonObject);
 
-                            if(jsonObject == null){
+                            boolean cepOK = true;
+                            if(jsonObject == null || jsonObject.isNull("lng")){
+                                cepOK = false;
                                 Toast.makeText(getActivity(), "CEP inexistente.", Toast.LENGTH_SHORT).show();
                             } else {
                                 try {
@@ -240,17 +249,36 @@ public class UserCrudActivity extends ActionBarActivity {
                                         getActivity().finish();
                                     }
 
-                                    progressDialog.dismiss();
                                 } catch (JSONException e3) {
                                     Log.e(AppHelper.getClassError(UserCrudActivity.class), e3.getMessage());
                                 }
                             }
+
+                            if(cepOK){
+                                UserDB userDB = new UserDB(getActivity());
+                                userBean = userDB.salvar(userBean);
+                                if(userBean != null){
+                                    Intent it = new Intent();
+                                    it.putExtra("msg", userBean.getId() == null ? "Usuário salvo com sucesso!" : "Usuário atualizado com sucesso!");
+                                    it.putExtra("user", userBean);
+                                    getActivity().setResult(RESULT_OK, it);
+                                    getActivity().finish();
+                                } else {
+                                    Intent it = new Intent();
+                                    it.putExtra("msg", userBean.getId() == null ? "Falha ao cadastrar o Usuário!" : "Falha ao atualizar Usuário!");
+                                    getActivity().setResult(RESULT_CANCELED, it);
+                                    getActivity().finish();
+                                }
+                            }
+
                         }
                     };
 
                     if(validateFields(userBean)){
                         task.execute();
                     }
+
+                    progressDialog.dismiss();
                 }
             });
 
@@ -266,7 +294,7 @@ public class UserCrudActivity extends ActionBarActivity {
                             try {
                                 String result = http.doGet(PAGE_CORREIOS + editTextZipCode.getText().toString());
                                 JSONObject jsonObject = new JSONObject(result);
-                                if(jsonObject.isNull("message")){
+                                if(!jsonObject.has("message")){
                                     return jsonObject;
                                 }
 
@@ -310,13 +338,7 @@ public class UserCrudActivity extends ActionBarActivity {
             AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
             alert.setNegativeButton("OK", null);
             // DADOS PESSOAIS
-            /*if(userBean == null){
-                validate = false;
-                alert.setTitle("Erro - Cadastro de Usuário").setMessage("Favor preencher os campos obrigatórios");
-                alert.setNegativeButton("OK", null);
-                alert.show();
-            }*/
-
+            
             if(validate && (userBean.getUserName().equals("")) || (userBean.getEmail().equals("")) || (userBean.getLogin().equals(""))){
                 validate = false;
                 Log.e(AppHelper.getClassError(UserCrudActivity.class), "Favor preencher todos os dados Pessoais");
@@ -324,13 +346,20 @@ public class UserCrudActivity extends ActionBarActivity {
                 alert.show();
             }
 
+            if(validate && (userBean.getGender() == null || userBean.getGender().equals(""))){
+                validate = false;
+                Log.e(AppHelper.getClassError(UserCrudActivity.class), "Favor selecionar o Gênero");
+                alert.setTitle("Erro - Cadastro de Usuário").setMessage("Favor preencher todos os dados Pessoais");
+                alert.show();
+            }
+
             // só valido a senha se for cadastro novo
-            if(userBean.getId() != null && validate && (userBean.getPassword().equals("") || editTextConfirmPassword.getText().toString().equals(""))){
+            if(userBean.getId() == null && validate && (userBean.getPassword().equals("") || editTextConfirmPassword.getText().toString().equals(""))){
                 validate = false;
                 Log.e(AppHelper.getClassError(UserCrudActivity.class), "Favor preencher os campos da Senha");
                 alert.setTitle("Erro - Cadastro de Usuário").setMessage("Favor preencher os campos da Senha");
                 alert.show();
-            } else if(userBean.getId() != null && validate && !userBean.getPassword().equals(editTextConfirmPassword.getText().toString())){
+            } else if(userBean.getId() == null && validate && !userBean.getPassword().equals(editTextConfirmPassword.getText().toString())){
                 validate = false;
                 Log.e(AppHelper.getClassError(UserCrudActivity.class), "As Senhas não coincidem");
                 alert.setTitle("Erro - Cadastro de Usuário").setMessage("As Senhas não coincidem");
