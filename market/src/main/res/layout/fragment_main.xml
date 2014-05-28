@@ -12,7 +12,9 @@
             android:id="@+id/btnProductList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Products List" android:layout_below="@+id/btnCartList" android:layout_alignParentLeft="true"
+            android:text="Products List"
+            android:layout_below="@+id/btnCartList"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"/>
 
     <Button

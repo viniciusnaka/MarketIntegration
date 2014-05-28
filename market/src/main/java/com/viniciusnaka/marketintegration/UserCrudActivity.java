@@ -338,7 +338,7 @@ public class UserCrudActivity extends ActionBarActivity {
             AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
             alert.setNegativeButton("OK", null);
             // DADOS PESSOAIS
-            
+
             if(validate && (userBean.getUserName().equals("")) || (userBean.getEmail().equals("")) || (userBean.getLogin().equals(""))){
                 validate = false;
                 Log.e(AppHelper.getClassError(UserCrudActivity.class), "Favor preencher todos os dados Pessoais");
