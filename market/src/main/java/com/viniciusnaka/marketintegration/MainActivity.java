@@ -11,8 +11,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.*;
-import android.view.View.OnClickListener;
 import android.widget.*;
+import com.fragment.*;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -28,8 +28,6 @@ public class MainActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-        setContentView(R.layout.activity_main);
 
         title = drawerTitle = getTitle();
         menu = getResources().getStringArray(R.array.menu);
@@ -69,7 +67,7 @@ public class MainActivity extends ActionBarActivity {
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
         if (savedInstanceState == null) {
-            selectItem(0);
+            selectItem(null, 0);
         }
 	}
 
@@ -116,23 +114,20 @@ public class MainActivity extends ActionBarActivity {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
+            selectItem(view, position);
         }
     }
 
-    private void selectItem(int position) {
+    private void selectItem(View view, int position) {
         // update the main content by replacing fragments
-        Fragment fragment = new MenuFragment();
-        Bundle args = new Bundle();
-        args.putInt(MenuFragment.ARG_MENU_NUMBER, position);
-        fragment.setArguments(args);
+        String menu = getResources().getStringArray(R.array.menu)[position];
 
         FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, getFragment(menu)).commit();
 
         // update selected item and title, then close the drawer
         listViewMenu.setItemChecked(position, true);
-        setTitle(menu[position]);
+        setTitle(menu);
         drawerLayout.closeDrawer(listViewMenu);
     }
 
@@ -161,74 +156,31 @@ public class MainActivity extends ActionBarActivity {
         actionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class MenuFragment extends Fragment {
+    /**
+        metodo utilizado para retornar uma instancia da Fragment solicitada pelo usuario
+     */
+	public Fragment getFragment(String menu){
 
-        public static final String ARG_MENU_NUMBER = "menu_number";
-		private Button btnCartList, btnProductList, btnShopping, btnUserList, btnUsersMap;
+        Fragment fragmentNew = null;
 
-		public MenuFragment() {
-		}
+        if(menu.equals("Carts")){
+            fragmentNew = new CartListFragment();
+        }
+        if(menu.equals("Products")){
+            fragmentNew = new ProductFragment();
+        }
+        if(menu.equals("Users")){
+            fragmentNew = new UserFragment();
+        }
+        if(menu.equals("Shopping")){
+            fragmentNew = new ProductsCartFragment();
+        }
+        if(menu.equals("Users Map")){
+            fragmentNew = new UserMapsFragment();
+        }
 
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main, container,
-					false);
+        return fragmentNew;
+    }
 
-            btnCartList = (Button) rootView.findViewById(R.id.btnCartList);
-            btnProductList = (Button) rootView.findViewById(R.id.btnProductList);
-            btnShopping = (Button) rootView.findViewById(R.id.btnShopping);
-            btnUserList = (Button) rootView.findViewById(R.id.btnUserList);
-            btnUsersMap = (Button) rootView.findViewById(R.id.btnUsersMap);
-
-            btnCartList.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					Intent it = new Intent(getActivity(), CartListActivity.class);
-					startActivity(it);					
-				}
-			});
-			
-			btnProductList.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					Intent it = new Intent(getActivity(), ProductActivity.class);
-					startActivity(it);										
-				}
-			});
-
-            btnShopping.setOnClickListener(new OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    Intent it = new Intent(getActivity(), ProductsCartActivity.class);
-                    startActivity(it);
-                }
-            });
-
-            btnUserList.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                   Intent it = new Intent(getActivity(), UserActivity.class);
-                    startActivity(it);
-                }
-            });
-
-            btnUsersMap.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent it = new Intent(getActivity(), UserMapsActivity.class);
-                    startActivity(it);
-                }
-            });
-
-            return rootView;
-		}
-	}
 
 }

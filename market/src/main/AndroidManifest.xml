@@ -4,7 +4,7 @@
 
     <uses-sdk
         android:maxSdkVersion="19"
-        android:minSdkVersion="9" />
+        android:minSdkVersion="11" />
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -34,35 +34,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.viniciusnaka.marketintegration.ProductActivity"
-            android:label="@string/app_name" >
-        </activity>
+
         <activity android:name="com.viniciusnaka.marketintegration.CartActivity" />
         <activity
             android:name="com.viniciusnaka.marketintegration.ProductCrudActivity"
             android:label="@string/title_activity_product_crud" />
         <activity
-            android:name="com.viniciusnaka.marketintegration.CartListActivity"
-            android:label="@string/title_activity_cart_list" >
-        </activity>
-        <activity
-            android:name="com.viniciusnaka.marketintegration.ProductsCartActivity"
-            android:label="@string/title_activity_products_cart" >
-        </activity>
-        <activity
-            android:name="com.viniciusnaka.marketintegration.UserActivity"
-            android:label="@string/title_activity_user_list" >
-        </activity>
-        <activity
             android:name="com.viniciusnaka.marketintegration.UserCrudActivity"
             android:label="@string/title_activity_user_crud"
             android:windowSoftInputMode="adjustResize" >
         </activity>
-        <activity
-            android:name="com.viniciusnaka.marketintegration.UserMapsActivity"
-            android:label="@string/title_activity_user_maps" >
-        </activity>
+
         <meta-data android:name="com.google.android.gms.version"
                    android:value="@integer/google_play_services_version"/>
         <meta-data android:name="com.google.android.maps.v2.API_KEY"
