@@ -8,6 +8,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.helper.AppHelper;
 import com.viniciusnaka.marketintegration.R;
 
 import java.util.List;
@@ -31,19 +33,30 @@ public class UserMapsFragment extends Fragment implements OnMapLongClickListener
     private GoogleMap map;
     private LocationManager locManager;
     private List<UserBean> userBeanList;
+    private static View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_user_maps, container, false);
+        if (view != null) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null)
+                parent.removeView(view);
+        }
+        try {
+            view = inflater.inflate(R.layout.fragment_user_maps, container, false);
+        } catch (InflateException e) {
+        /* map is already there, just return view as it is */
+            Log.e(AppHelper.getClassError(UserMapsFragment.class), e.getMessage());
+        }
 
         //puxo o Fragment do mapa da tela
         MapFragment frag =
                 (MapFragment)getActivity().getFragmentManager().findFragmentById(R.id.fragmentUserMaps);
         map = frag.getMap();
 
-        //pego a informa‹o de onde o usuario esteve
+        //pego a informacao de onde o usuario esteve
         locManager = (LocationManager)getActivity().getSystemService(getActivity().LOCATION_SERVICE);
         Location localNet = locManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         Location localGPS = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -58,7 +71,7 @@ public class UserMapsFragment extends Fragment implements OnMapLongClickListener
             local = localNet;
         }
         //levo o usuario para o local encontrado
-        if(local != null){
+        //if(local != null){
 
             //levo o mapa para esse local(com zoom mais proximo)
             //map.animateCamera(CameraUpdateFactory.newLatLngZoom(ponto, 15));
@@ -77,7 +90,7 @@ public class UserMapsFragment extends Fragment implements OnMapLongClickListener
                 pin.title(userBeanLoad.getUserName()).
                         snippet(strAddress.toString()).
                         position(userLocation);
-                if(userBeanLoad.getGender().equals(UserBean.Gender.MALE.getSex())){
+                if(userBeanLoad.getGender().equals(UserBean.Gender.MALE)){
                     pin.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_male));
                 } else {
                     pin.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_female));
@@ -86,11 +99,11 @@ public class UserMapsFragment extends Fragment implements OnMapLongClickListener
                 map.addMarker(pin);
             }
 
-        }
+        //}
         //trato o clique longo sobre o mapa
         map.setOnMapLongClickListener(this);
 
-        return rootView;
+        return view;
     }
 
     @Override
@@ -123,4 +136,5 @@ public class UserMapsFragment extends Fragment implements OnMapLongClickListener
         });
         message.show();
     }
+
 }
